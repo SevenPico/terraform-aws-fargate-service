@@ -1,0 +1,337 @@
+variable "task_cpu" {
+  default = 256
+}
+
+variable "task_memory" {
+  default = 512
+}
+
+variable "nlb_container_port" {
+  type = number
+  default = 443
+}
+
+variable "ddb_port" {
+  type = number
+  default = 27017
+}
+
+variable "ddb_username" {
+  type = string
+  default = ""
+}
+
+variable "ddb_password" {
+  type = string
+  default = ""
+}
+
+variable "ddb_retention_period" {
+  type = number
+  default = 30
+}
+
+variable "ddb_allowed_security_groups" {
+  type = list(string)
+  default = []
+}
+
+variable "enable_nlb" {
+  type = bool
+  default = false
+}
+
+variable "enable_ddb" {
+  type = bool
+  default = false
+}
+
+variable "secrets" {
+  type = map(string)
+  default = {}
+}
+
+variable "container_image" {
+  type = string
+}
+variable "container_port" {
+  default = 443
+}
+variable "service_command" {
+  type = list(string)
+  default = []
+}
+
+variable "use_http" {
+  default = false
+}
+
+variable "health_check_path" {
+  default = "/health"
+}
+
+variable "health_check_matcher" {
+  default = "200-399"
+}
+
+variable "ecs_cluster_arn" {
+  type = string
+}
+
+variable "ecs_cluster_name" {
+  type = string
+}
+
+variable "ecs_cloudwatch_log_group_name" {
+  type = string
+  default = ""
+}
+
+variable "desired_count" {
+  type = number
+  default = 1
+}
+
+variable "subnet_ids" {
+  type = list(string)
+  default = []
+}
+
+variable "acm_certificate_arn" {
+  type = string
+}
+
+variable "vpc_id" {
+  type = string
+}
+
+variable "access_logs_s3_bucket_id" {
+  type = string
+  default = ""
+}
+
+variable "route53_zone_id" {
+  type = string
+  default = ""
+}
+
+variable "common_name" {
+  type = string
+}
+
+variable "service_security_group_rules_map" {
+  type        = any
+  default     = {}
+}
+
+variable "alb_security_group_rules_map" {
+  type        = any
+  default     = {}
+}
+
+variable "container_entrypoint" {
+  default = null
+}
+
+variable "container_port_mappings" {
+  default = []
+}
+
+variable "ecs_task_role_policy_arns" {
+  type = list(string)
+  default = []
+}
+
+variable "ecs_task_exec_role_policy_arns" {
+  type = list(string)
+  default = []
+}
+
+variable "ecs_service_role_policy_arns" {
+  type = list(string)
+  default = []
+}
+
+variable "autoscale_enabled" {
+  type        = bool
+  description = "A boolean to enable/disable autoscale policy for ECS Service"
+  default     = false
+}
+
+variable "autoscale_dimension" {
+  type        = string
+  description = "Dimension to autoscale on (valid options: cpu, memory)"
+  default     = "memory"
+}
+
+variable "autoscale_min_capacity" {
+  type        = number
+  description = "Minimum number of running instances of a Service"
+  default     = 1
+}
+
+variable "autoscale_max_capacity" {
+  type        = number
+  description = "Maximum number of running instances of a Service"
+  default     = 2
+}
+
+variable "autoscale_scale_up_adjustment" {
+  type        = number
+  description = "Scaling adjustment to make during scale up event"
+  default     = 1
+}
+
+variable "autoscale_scale_up_cooldown" {
+  type        = number
+  description = "Period (in seconds) to wait between scale up events"
+  default     = 60
+}
+
+variable "autoscale_scale_down_adjustment" {
+  type        = number
+  description = "Scaling adjustment to make during scale down event"
+  default     = -1
+}
+
+variable "autoscale_scale_down_cooldown" {
+  type        = number
+  description = "Period (in seconds) to wait between scale down events"
+  default     = 300
+}
+
+variable "alarms_enabled" {
+  type        = bool
+  description = "A boolean to enable/disable service utilization SNS alarms"
+  default     = false
+}
+
+variable "alarms_cpu_utilization_high_threshold" {
+  type        = number
+  description = "The maximum percentage of CPU utilization average"
+  default     = 80
+}
+
+variable "alarms_cpu_utilization_high_evaluation_periods" {
+  type        = number
+  description = "Number of periods to evaluate for the alarm"
+  default     = 1
+}
+
+variable "alarms_cpu_utilization_high_period" {
+  type        = number
+  description = "Duration in seconds to evaluate for the alarm"
+  default     = 300
+}
+
+variable "alarms_cpu_utilization_high_alarm_actions" {
+  type        = list(string)
+  description = "A list of ARNs (i.e. SNS Topic ARN) to notify on CPU Utilization High Alarm action"
+  default     = []
+}
+
+variable "alarms_cpu_utilization_high_ok_actions" {
+  type        = list(string)
+  description = "A list of ARNs (i.e. SNS Topic ARN) to notify on CPU Utilization High OK action"
+  default     = []
+}
+
+variable "alarms_cpu_utilization_low_threshold" {
+  type        = number
+  description = "The minimum percentage of CPU utilization average"
+  default     = 20
+}
+
+variable "alarms_cpu_utilization_low_evaluation_periods" {
+  type        = number
+  description = "Number of periods to evaluate for the alarm"
+  default     = 1
+}
+
+variable "alarms_cpu_utilization_low_period" {
+  type        = number
+  description = "Duration in seconds to evaluate for the alarm"
+  default     = 300
+}
+
+variable "alarms_cpu_utilization_low_alarm_actions" {
+  type        = list(string)
+  description = "A list of ARNs (i.e. SNS Topic ARN) to notify on CPU Utilization Low Alarm action"
+  default     = []
+}
+
+variable "alarms_cpu_utilization_low_ok_actions" {
+  type        = list(string)
+  description = "A list of ARNs (i.e. SNS Topic ARN) to notify on CPU Utilization Low OK action"
+  default     = []
+}
+
+variable "alarms_memory_utilization_high_threshold" {
+  type        = number
+  description = "The maximum percentage of Memory utilization average"
+  default     = 80
+}
+
+variable "alarms_memory_utilization_high_evaluation_periods" {
+  type        = number
+  description = "Number of periods to evaluate for the alarm"
+  default     = 1
+}
+
+variable "alarms_memory_utilization_high_period" {
+  type        = number
+  description = "Duration in seconds to evaluate for the alarm"
+  default     = 300
+}
+
+variable "alarms_memory_utilization_high_alarm_actions" {
+  type        = list(string)
+  description = "A list of ARNs (i.e. SNS Topic ARN) to notify on Memory Utilization High Alarm action"
+  default     = []
+}
+
+variable "alarms_memory_utilization_high_ok_actions" {
+  type        = list(string)
+  description = "A list of ARNs (i.e. SNS Topic ARN) to notify on Memory Utilization High OK action"
+  default     = []
+}
+
+variable "alarms_memory_utilization_low_threshold" {
+  type        = number
+  description = "The minimum percentage of Memory utilization average"
+  default     = 20
+}
+
+variable "alarms_memory_utilization_low_evaluation_periods" {
+  type        = number
+  description = "Number of periods to evaluate for the alarm"
+  default     = 1
+}
+
+variable "alarms_memory_utilization_low_period" {
+  type        = number
+  description = "Duration in seconds to evaluate for the alarm"
+  default     = 300
+}
+
+variable "alarms_memory_utilization_low_alarm_actions" {
+  type        = list(string)
+  description = "A list of ARNs (i.e. SNS Topic ARN) to notify on Memory Utilization Low Alarm action"
+  default     = []
+}
+
+variable "alarms_memory_utilization_low_ok_actions" {
+  type        = list(string)
+  description = "A list of ARNs (i.e. SNS Topic ARN) to notify on Memory Utilization Low OK action"
+  default     = []
+}
+
+variable "cloudwatch_log_expiration_days" { default = 90 }
+variable "enable_glacier_transition" { default = false }
+variable "expiration_days" { default = 90 }
+variable "force_destroy" { default = true }
+variable "glacier_transition_days" { default = 60 }
+variable "lifecycle_rule_enabled" { default = false }
+variable "noncurrent_version_expiration_days" { default = 30 }
+variable "noncurrent_version_transition_days" { default = 30 }
+variable "standard_transition_days" { default = 30 }
