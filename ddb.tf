@@ -24,15 +24,15 @@ module "ddb" {
   subnet_ids                      = var.subnet_ids
   vpc_id                          = var.vpc_id
   allowed_security_groups         = concat([module.service.service_security_group_id], var.ddb_allowed_security_groups)
-  cluster_dns_name                = "${module.this.name}-ddb.${var.common_name}"
   db_port                         = var.ddb_port
   kms_key_id                      = one(aws_kms_key.ddb[*].arn)
   master_username                 = var.ddb_username
   master_password                 = var.ddb_password
-  reader_dns_name                 = "${module.this.name}-ddb-reader.${var.common_name}"
   retention_period                = var.ddb_retention_period
-  zone_id                         = var.route53_zone_id
 
+  cluster_dns_name                = "" #module.ddb_dns_meta.descriptors["FQDN"]
+  reader_dns_name                 = "" #module.ddb_reader_dns_meta.descriptors["FQDN"]
+  zone_id                         = "" #var.route53_zone_id
   allowed_cidr_blocks             = []
   apply_immediately               = true
   auto_minor_version_upgrade      = true

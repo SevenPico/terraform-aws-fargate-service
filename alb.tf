@@ -82,16 +82,3 @@ module "alb_security_group" {
     }
   ]
 }
-
-
-# ------------------------------------------------------------------------------
-# Application Load Balancer : DNS Record
-# ------------------------------------------------------------------------------
-resource "aws_route53_record" "alb" {
-  count   = module.alb_meta.enabled ? 1 : 0
-  zone_id = var.route53_zone_id
-  type    = "CNAME"
-  name    = "${module.this.name}.${var.common_name}"
-  records = [module.alb.alb_dns_name]
-  ttl     = 300
-}

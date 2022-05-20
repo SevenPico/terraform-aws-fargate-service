@@ -66,20 +66,3 @@ resource "aws_lb_target_group_attachment" "nlb" {
   target_group_arn = one(module.nlb[*].default_target_group_arn)
   target_id        = module.alb.alb_arn
 }
-
-
-# ------------------------------------------------------------------------------
-# Network Load Balancer : DNS Record
-# ------------------------------------------------------------------------------
-resource "aws_route53_record" "nlb" {
-  count   = module.nlb_meta.enabled ? 1 : 0
-  zone_id = var.route53_zone_id
-  name    = "${module.this.name}-nlb.${var.common_name}"
-  type    = "A"
-
-  alias {
-    name                   = one(module.nlb[*].nlb_dns_name)
-    zone_id                = one(module.nlb[*].nlb_zone_id)
-    evaluate_target_health = true
-  }
-}
