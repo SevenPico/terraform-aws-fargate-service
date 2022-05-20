@@ -39,7 +39,7 @@ module "alb" {
   https_port                         = var.container_port
   http_port                          = var.container_port
   https_ssl_policy                   = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-  internal                           = true
+  internal                           = var.alb_internal #true
   noncurrent_version_expiration_days = var.noncurrent_version_expiration_days
   noncurrent_version_transition_days = var.noncurrent_version_transition_days
   security_group_ids                 = [module.alb_security_group.id]

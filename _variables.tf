@@ -120,6 +120,11 @@ variable "alb_security_group_rules_map" {
   default     = {}
 }
 
+variable "alb_internal" {
+  type        = bool
+  default     = true
+}
+
 variable "container_entrypoint" {
   default = null
 }
