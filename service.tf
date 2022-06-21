@@ -30,7 +30,8 @@ module "container_definition" {
     }])
 
   map_secrets = merge(
-    {for key in keys(var.secrets): key => "${aws_secretsmanager_secret.container[0].arn}:${key}:AWSCURRENT:"}
+    {for key in keys(var.secrets): key => "${aws_secretsmanager_secret.container[0].arn}:${key}:AWSCURRENT:"},
+    var.additional_secrets
   )
 }
 

@@ -67,6 +67,8 @@ module "alb_security_group" {
   rules_map                  = var.alb_security_group_rules_map
   rules = [
     {
+    # FIXME - egress not needed, check
+    # FIXME - key on each rule
       type              = "egress"
       from_port         = "0"
       to_port           = "0"

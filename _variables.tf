@@ -51,6 +51,11 @@ variable "secrets" {
   default = {}
 }
 
+variable "additional_secrets" {
+  type = map(string)
+  default = {}
+}
+
 variable "container_image" {
   type = string
 }
