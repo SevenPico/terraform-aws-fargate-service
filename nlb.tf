@@ -40,7 +40,7 @@ module "nlb" {
   health_check_port                 = null
   health_check_protocol             = "HTTPS"
   health_check_threshold            = 2
-  internal                          = true
+  internal                          = false
   ip_address_type                   = "ipv4"
 
   lifecycle_rule_enabled                  = var.lifecycle_rule_enabled
@@ -52,8 +52,8 @@ module "nlb" {
   target_group_name                       = var.enable_nlb ? module.nlb_tgt_meta.id : "null"
   target_group_port                       = 443
   target_group_target_type                = "alb"
-  tcp_enabled                             = false
-  tls_enabled                             = true
+  tcp_enabled                             = true
+  tls_enabled                             = false
   tcp_port                                = 443
   tls_port                                = 443
   tls_ssl_policy                          = "ELBSecurityPolicy-2016-08"
