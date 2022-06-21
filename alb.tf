@@ -47,7 +47,7 @@ module "alb" {
   subnet_ids                         = var.service_subnet_ids
   target_group_name                  = module.alb_tgt_meta.id
   target_group_port                  = var.container_port
-  target_group_protocol              = var.alb_target_group_protocol ? "HTTP" : "HTTPS"
+  target_group_protocol              = var.alb_target_group_protocol
   vpc_id                             = var.vpc_id
 }
 
