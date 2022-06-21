@@ -52,8 +52,8 @@ module "nlb" {
   target_group_name                       = var.enable_nlb ? module.nlb_tgt_meta.id : "null"
   target_group_port                       = 443
   target_group_target_type                = "alb"
-  tcp_enabled                             = true
-  tls_enabled                             = false
+  tcp_enabled                             = false
+  tls_enabled                             = true
   tcp_port                                = 443
   tls_port                                = 443
   tls_ssl_policy                          = "ELBSecurityPolicy-2016-08"
