@@ -36,8 +36,8 @@ module "alb" {
   health_check_matcher               = var.health_check_matcher
   http_enabled                       = false
   https_enabled                      = true
-  https_port                         = var.container_port
-  http_port                          = var.container_port
+  https_port                         = 443
+  http_port                          = 80
   https_ssl_policy                   = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
   internal                           = var.alb_internal #true
   noncurrent_version_expiration_days = var.noncurrent_version_expiration_days
