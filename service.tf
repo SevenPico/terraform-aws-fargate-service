@@ -63,18 +63,17 @@ module "service" {
 
   vpc_id                             = var.vpc_id
   ecs_cluster_arn                    = var.ecs_cluster_arn
-  subnet_ids                         = var.subnet_ids
+  subnet_ids                         = var.service_subnet_ids
   task_cpu                           = var.task_cpu
   task_memory                        = var.task_memory
 
   platform_version                   = "1.4.0"
   propagate_tags                     = "SERVICE"
-  assign_public_ip                   = true # FIXME review
+  assign_public_ip                   = false
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
   health_check_grace_period_seconds  = 10
   enable_ecs_managed_tags            = true
-  nlb_container_port                 = var.nlb_container_port
 }
 
 

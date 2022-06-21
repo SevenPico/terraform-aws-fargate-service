@@ -21,7 +21,7 @@ module "ddb" {
   version = "0.13.0"
   context = module.ddb_meta.context
 
-  subnet_ids                      = var.subnet_ids
+  subnet_ids                      = var.service_subnet_ids
   vpc_id                          = var.vpc_id
   allowed_security_groups         = concat([module.service.service_security_group_id], var.ddb_allowed_security_groups)
   db_port                         = var.ddb_port

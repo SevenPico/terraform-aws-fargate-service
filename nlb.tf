@@ -23,7 +23,7 @@ module "nlb" {
   version = "0.8.2"
   context = module.nlb_meta.context
 
-  subnet_ids                        = var.subnet_ids
+  subnet_ids                        = var.nlb_subnet_ids
   vpc_id                            = var.vpc_id
   access_logs_enabled               = var.access_logs_s3_bucket_id != ""
   access_logs_s3_bucket_id          = var.access_logs_s3_bucket_id

@@ -6,11 +6,6 @@ variable "task_memory" {
   default = 512
 }
 
-variable "nlb_container_port" {
-  type = number
-  default = 443
-}
-
 variable "ddb_port" {
   type = number
   default = 27017
@@ -59,16 +54,18 @@ variable "additional_secrets" {
 variable "container_image" {
   type = string
 }
+
 variable "container_port" {
   default = 443
 }
+
 variable "service_command" {
   type = list(string)
   default = []
 }
 
-variable "use_http" {
-  default = false
+variable "alb_target_group_protocol" {
+  default = "HTTPS"
 }
 
 variable "health_check_path" {
@@ -97,7 +94,12 @@ variable "desired_count" {
   default = 1
 }
 
-variable "subnet_ids" {
+variable "service_subnet_ids" {
+  type = list(string)
+  default = []
+}
+
+variable "nlb_subnet_ids" {
   type = list(string)
   default = []
 }
