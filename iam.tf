@@ -98,6 +98,17 @@ data "aws_iam_policy_document" "task_exec_role_policy_doc" {
     ]
     resources = ["*"]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:DescribeLogGroups",
+      "logs:CreateLogStream",
+      "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
+    ]
+    resources = ["*"]
+  }
 }
 
 

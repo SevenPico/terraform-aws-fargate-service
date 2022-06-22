@@ -13,6 +13,19 @@ module "container_definition" {
   command         = var.service_command
   entrypoint = var.container_entrypoint
 
+  linux_parameters = {
+    capabilities = {
+      add  = []
+      drop = []
+    }
+    devices            = []
+    initProcessEnabled = true
+    maxSwap            = null
+    sharedMemorySize   = null
+    swappiness         = null
+    tmpfs              = []
+  }
+
   log_configuration = {
     logDriver : "awslogs"
     options : {
