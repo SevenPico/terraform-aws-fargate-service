@@ -68,6 +68,17 @@ data "aws_iam_policy_document" "task_role_policy_doc" {
       "ssmmessages:OpenDataChannel"
     ]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:DescribeLogGroups",
+      "logs:CreateLogStream",
+      "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
+    ]
+    resources = ["*"]
+  }
 }
 
 
@@ -117,17 +128,6 @@ data "aws_iam_policy_document" "task_exec_role_policy_doc" {
       "elasticloadbalancing:Describe*",
       "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
       "elasticloadbalancing:RegisterTargets"
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
-      "logs:DescribeLogGroups",
-      "logs:CreateLogStream",
-      "logs:DescribeLogStreams",
-      "logs:PutLogEvents",
     ]
     resources = ["*"]
   }
