@@ -2,10 +2,10 @@
 # Application Load Balancer
 # ------------------------------------------------------------------------------
 module "alb_meta" {
-  source     = "registry.terraform.io/cloudposse/label/null"
-  version    = "0.25.0"
-  context    = module.this.context
-  attributes = ["pvt", "alb"]
+  source          = "registry.terraform.io/cloudposse/label/null"
+  version         = "0.25.0"
+  context         = module.this.context
+  attributes      = ["pvt", "alb"]
   id_length_limit = 32
 }
 
@@ -67,20 +67,20 @@ module "alb_security_group" {
   rules_map                  = var.alb_security_group_rules_map
   rules = [
     {
-    # FIXME - egress not needed, check
-    # FIXME - key on each rule
-      type              = "egress"
-      from_port         = "0"
-      to_port           = "0"
-      protocol          = "-1"
-      cidr_blocks       = ["0.0.0.0/0"]
+      # FIXME - egress not needed, check
+      # FIXME - key on each rule
+      type        = "egress"
+      from_port   = "0"
+      to_port     = "0"
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
     },
     {
-      type              = "ingress"
-      from_port         = 443
-      to_port           = 443
-      protocol          = "tcp"
-      cidr_blocks       = ["0.0.0.0/0"]
+      type        = "ingress"
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
     }
   ]
 }

@@ -9,7 +9,7 @@ module "task_exec_policy_meta" {
 }
 
 resource "aws_iam_policy" "task_exec_policy" {
-  count = module.task_exec_policy_meta.enabled ? 1 : 0
+  count       = module.task_exec_policy_meta.enabled ? 1 : 0
   policy      = one(data.aws_iam_policy_document.task_exec_policy_doc[*].json)
   name        = module.task_exec_policy_meta.id
   description = ""

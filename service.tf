@@ -11,7 +11,7 @@ module "container_definition" {
   container_image = var.container_image
   container_name  = module.this.id
   command         = var.service_command
-  entrypoint = var.container_entrypoint
+  entrypoint      = var.container_entrypoint
 
   linux_parameters = {
     capabilities = {
@@ -36,14 +36,14 @@ module "container_definition" {
     }
   }
 
-  port_mappings   = concat(var.container_port_mappings, [{
+  port_mappings = concat(var.container_port_mappings, [{
     containerPort : var.container_port
     hostPort : var.container_port
     protocol : "tcp"
-    }])
+  }])
 
   map_secrets = merge(
-    {for key in keys(var.secrets): key => "${aws_secretsmanager_secret.container[0].arn}:${key}:AWSCURRENT:"},
+    { for key in keys(var.secrets) : key => "${aws_secretsmanager_secret.container[0].arn}:${key}:AWSCURRENT:" },
     var.additional_secrets
   )
 }
@@ -61,10 +61,10 @@ module "service" {
   container_port            = var.container_port
   desired_count             = var.desired_count
   ecs_load_balancers = [{
-    elb_name         : null
+    elb_name : null
     target_group_arn : module.alb.default_target_group_arn
-    container_name   : module.this.id
-    container_port   : var.container_port
+    container_name : module.this.id
+    container_port : var.container_port
   }]
 
   security_group_ids = [module.service_security_group.id]
@@ -79,11 +79,11 @@ module "service" {
     var.ecs_task_exec_role_policy_arns,
   ])
 
-  vpc_id                             = var.vpc_id
-  ecs_cluster_arn                    = var.ecs_cluster_arn
-  subnet_ids                         = var.service_subnet_ids
-  task_cpu                           = var.task_cpu
-  task_memory                        = var.task_memory
+  vpc_id          = var.vpc_id
+  ecs_cluster_arn = var.ecs_cluster_arn
+  subnet_ids      = var.service_subnet_ids
+  task_cpu        = var.task_cpu
+  task_memory     = var.task_memory
 
   platform_version                   = "1.4.0"
   propagate_tags                     = "SERVICE"
@@ -94,39 +94,39 @@ module "service" {
   enable_ecs_managed_tags            = true
   security_group_enabled             = false
 
-  security_group_description = ""
-  enable_all_egress_rule = false
-  enable_icmp_rule = false
-  use_alb_security_group = false
-  alb_security_group = ""
-  use_nlb_cidr_blocks = false
-  nlb_container_port = 80
-  nlb_cidr_blocks = []
-  launch_type = "FARGATE"
-  scheduling_strategy = "REPLICA"
-  ordered_placement_strategy = []
-  task_placement_constraints = []
-  service_placement_constraints = []
-  network_mode = "awsvpc"
-  deployment_controller_type = "ECS"
-  runtime_platform = []
-  efs_volumes = []
-  docker_volumes = []
-  proxy_configuration = null
-  ignore_changes_task_definition = true
-  ignore_changes_desired_count = false
-  capacity_provider_strategies = []
-  service_registries = []
-  permissions_boundary = ""
-  use_old_arn = false
-  wait_for_steady_state = false
-  task_definition = null
-  force_new_deployment = true
-  exec_enabled = true
+  security_group_description         = ""
+  enable_all_egress_rule             = false
+  enable_icmp_rule                   = false
+  use_alb_security_group             = false
+  alb_security_group                 = ""
+  use_nlb_cidr_blocks                = false
+  nlb_container_port                 = 80
+  nlb_cidr_blocks                    = []
+  launch_type                        = "FARGATE"
+  scheduling_strategy                = "REPLICA"
+  ordered_placement_strategy         = []
+  task_placement_constraints         = []
+  service_placement_constraints      = []
+  network_mode                       = "awsvpc"
+  deployment_controller_type         = "ECS"
+  runtime_platform                   = []
+  efs_volumes                        = []
+  docker_volumes                     = []
+  proxy_configuration                = null
+  ignore_changes_task_definition     = true
+  ignore_changes_desired_count       = false
+  capacity_provider_strategies       = []
+  service_registries                 = []
+  permissions_boundary               = ""
+  use_old_arn                        = false
+  wait_for_steady_state              = false
+  task_definition                    = null
+  force_new_deployment               = true
+  exec_enabled                       = true
   circuit_breaker_deployment_enabled = false
-  circuit_breaker_rollback_enabled = false
-  ephemeral_storage_size = 0
-  role_tags_enabled = true
+  circuit_breaker_rollback_enabled   = false
+  ephemeral_storage_size             = 0
+  role_tags_enabled                  = true
 }
 
 
@@ -138,8 +138,8 @@ module "service_security_group" {
   version = "0.4.3"
   context = module.this.context
 
-  vpc_id = var.vpc_id
-  security_group_name = [module.this.id]
+  vpc_id                     = var.vpc_id
+  security_group_name        = [module.this.id]
   security_group_description = "Controls access to ${module.this.id}"
 
   create_before_destroy = true

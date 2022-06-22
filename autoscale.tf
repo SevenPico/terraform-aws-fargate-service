@@ -37,8 +37,8 @@ module "alarms_meta" {
 }
 
 locals {
-  cpu_utilization_high_alarm_actions    = var.autoscale_enabled && var.autoscale_dimension == "cpu"    ? module.autoscale.scale_up_policy_arn : ""
-  cpu_utilization_low_alarm_actions     = var.autoscale_enabled && var.autoscale_dimension == "cpu"    ? module.autoscale.scale_down_policy_arn : ""
+  cpu_utilization_high_alarm_actions    = var.autoscale_enabled && var.autoscale_dimension == "cpu" ? module.autoscale.scale_up_policy_arn : ""
+  cpu_utilization_low_alarm_actions     = var.autoscale_enabled && var.autoscale_dimension == "cpu" ? module.autoscale.scale_down_policy_arn : ""
   memory_utilization_high_alarm_actions = var.autoscale_enabled && var.autoscale_dimension == "memory" ? module.autoscale.scale_up_policy_arn : ""
   memory_utilization_low_alarm_actions  = var.autoscale_enabled && var.autoscale_dimension == "memory" ? module.autoscale.scale_down_policy_arn : ""
 }

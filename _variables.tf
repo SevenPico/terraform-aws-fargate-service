@@ -7,47 +7,47 @@ variable "task_memory" {
 }
 
 variable "ddb_port" {
-  type = number
+  type    = number
   default = 27017
 }
 
 variable "ddb_username" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "ddb_password" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "ddb_retention_period" {
-  type = number
+  type    = number
   default = 30
 }
 
 variable "ddb_allowed_security_groups" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
 variable "enable_nlb" {
-  type = bool
+  type    = bool
   default = false
 }
 
 variable "enable_ddb" {
-  type = bool
+  type    = bool
   default = false
 }
 
 variable "secrets" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
 
 variable "additional_secrets" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
 
@@ -60,7 +60,7 @@ variable "container_port" {
 }
 
 variable "service_command" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
@@ -85,22 +85,22 @@ variable "ecs_cluster_name" {
 }
 
 variable "ecs_cloudwatch_log_group_name" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "desired_count" {
-  type = number
+  type    = number
   default = 1
 }
 
 variable "service_subnet_ids" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
 variable "nlb_subnet_ids" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
@@ -113,23 +113,23 @@ variable "vpc_id" {
 }
 
 variable "access_logs_s3_bucket_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "service_security_group_rules_map" {
-  type        = any
-  default     = {}
+  type    = any
+  default = {}
 }
 
 variable "alb_security_group_rules_map" {
-  type        = any
-  default     = {}
+  type    = any
+  default = {}
 }
 
 variable "alb_internal" {
-  type        = bool
-  default     = true
+  type    = bool
+  default = true
 }
 
 variable "container_entrypoint" {
@@ -141,17 +141,17 @@ variable "container_port_mappings" {
 }
 
 variable "ecs_task_role_policy_arns" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
 variable "ecs_task_exec_role_policy_arns" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
 variable "ecs_service_role_policy_arns" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
