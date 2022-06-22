@@ -31,6 +31,11 @@ resource "aws_iam_role" "task_role" {
 
   assume_role_policy  = one(data.aws_iam_policy_document.task_assume_role_policy_doc[*].json)
   managed_policy_arns = var.ecs_task_role_policy_arns
+
+  inline_policy {
+    name   = "${module.task_role_meta.id}-policy"
+    policy = one(data.aws_iam_policy_document.task_role_policy_doc[*].json)
+  }
 }
 
 data "aws_iam_policy_document" "task_assume_role_policy_doc" {
@@ -46,17 +51,22 @@ data "aws_iam_policy_document" "task_assume_role_policy_doc" {
       type = "Service"
     }
   }
+}
+
+data "aws_iam_policy_document" "task_role_policy_doc" {
+  count = module.task_role_meta.enabled ? 1 : 0
 
   statement {
+    sid       = "SsmMessages"
+    effect    = "Allow"
+    resources = ["*"]
+
     actions = [
       "ssmmessages:CreateControlChannel",
       "ssmmessages:CreateDataChannel",
       "ssmmessages:OpenControlChannel",
       "ssmmessages:OpenDataChannel"
     ]
-    effect    = "Allow"
-    resources = ["*"]
-    sid       = "SsmMessages"
   }
 }
 
