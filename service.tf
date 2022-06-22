@@ -142,6 +142,8 @@ module "service_security_group" {
   security_group_name = [module.this.id]
   security_group_description = "Controls access to ${module.this.id}"
 
+  create_before_destroy = true
+
   rules_map = var.service_security_group_rules_map
   rules = [for rule in [
     {
