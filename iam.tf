@@ -46,6 +46,18 @@ data "aws_iam_policy_document" "task_assume_role_policy_doc" {
       type = "Service"
     }
   }
+
+  statement {
+    actions = [
+      "ssmmessages:CreateControlChannel",
+      "ssmmessages:CreateDataChannel",
+      "ssmmessages:OpenControlChannel",
+      "ssmmessages:OpenDataChannel"
+    ]
+    effect    = "Allow"
+    resources = ["*"]
+    sid       = "SsmMessages"
+  }
 }
 
 
@@ -80,8 +92,8 @@ data "aws_iam_policy_document" "task_exec_role_policy_doc" {
   }
 
   statement {
-    effect = "Allow"
-    actions = ["kms:Decrypt"]
+    effect    = "Allow"
+    actions   = ["kms:Decrypt"]
     resources = [module.kms_key.key_arn]
   }
 
