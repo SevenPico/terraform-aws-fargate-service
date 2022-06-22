@@ -87,6 +87,43 @@ module "service" {
   deployment_minimum_healthy_percent = 100
   health_check_grace_period_seconds  = 10
   enable_ecs_managed_tags            = true
+  security_group_enabled             = false
+
+  security_group_description = ""
+  enable_all_egress_rule = false
+  enable_icmp_rule = false
+  use_alb_security_group = false
+  alb_security_group = ""
+  use_nlb_cidr_blocks = false
+  nlb_container_port = 80
+  nlb_cidr_blocks = []
+  launch_type = "FARGATE"
+  scheduling_strategy = "REPLICA"
+  ordered_placement_strategy = []
+  task_placement_constraints = []
+  service_placement_constraints = []
+  network_mode = "awsvpc"
+  task_exec_policy_arns = []
+  task_policy_arns = []
+  deployment_controller_type = "ECS"
+  runtime_platform = []
+  efs_volumes = []
+  docker_volumes = []
+  proxy_configuration = null
+  ignore_changes_task_definition = true
+  ignore_changes_desired_count = false
+  capacity_provider_strategies = []
+  service_registries = []
+  permissions_boundary = ""
+  use_old_arn = false
+  wait_for_steady_state = false
+  task_definition = null
+  force_new_deployment = true
+  exec_enabled = true
+  circuit_breaker_deployment_enabled = false
+  circuit_breaker_rollback_enabled = false
+  ephemeral_storage_size = 0
+  role_tags_enabled = true
 }
 
 
@@ -101,7 +138,6 @@ module "service_security_group" {
   vpc_id = var.vpc_id
   security_group_name = [module.this.id]
   security_group_description = "Controls access to the service"
-  create_before_destroy = true
 
   rules_map = var.service_security_group_rules_map
   rules = [for rule in [
