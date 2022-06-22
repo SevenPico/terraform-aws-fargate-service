@@ -1,10 +1,9 @@
-
-module "task_role_meta" {
-  source     = "registry.terraform.io/cloudposse/label/null"
-  version    = "0.25.0"
-  context    = module.this.context
-  attributes = ["task-role"]
-}
+# module "task_role_meta" {
+#   source     = "registry.terraform.io/cloudposse/label/null"
+#   version    = "0.25.0"
+#   context    = module.this.context
+#   attributes = ["task-role"]
+# }
 
 module "task_exec_role_meta" {
   source     = "registry.terraform.io/cloudposse/label/null"
@@ -24,62 +23,62 @@ module "service_role_meta" {
 # ------------------------------------------------------------------------------
 # ECS Task Role (or Container Role)
 # ------------------------------------------------------------------------------
-resource "aws_iam_role" "task_role" {
-  count = module.task_role_meta.enabled ? 1 : 0
-  name  = module.task_role_meta.id
-  tags  = module.task_role_meta.tags
+# resource "aws_iam_role" "task_role" {
+#   count = module.task_role_meta.enabled ? 1 : 0
+#   name  = module.task_role_meta.id
+#   tags  = module.task_role_meta.tags
 
-  assume_role_policy  = one(data.aws_iam_policy_document.task_assume_role_policy_doc[*].json)
-  managed_policy_arns = var.ecs_task_role_policy_arns
+#   assume_role_policy  = one(data.aws_iam_policy_document.task_assume_role_policy_doc[*].json)
+#   managed_policy_arns = var.ecs_task_role_policy_arns
 
-  inline_policy {
-    name   = "${module.task_role_meta.id}-policy"
-    policy = one(data.aws_iam_policy_document.task_role_policy_doc[*].json)
-  }
-}
+#   inline_policy {
+#     name   = "${module.task_role_meta.id}-policy"
+#     policy = one(data.aws_iam_policy_document.task_role_policy_doc[*].json)
+#   }
+# }
 
-data "aws_iam_policy_document" "task_assume_role_policy_doc" {
-  count = module.task_role_meta.enabled ? 1 : 0
+# data "aws_iam_policy_document" "task_assume_role_policy_doc" {
+#   count = module.task_role_meta.enabled ? 1 : 0
 
-  statement {
-    actions = ["sts:AssumeRole"]
-    effect  = "Allow"
-    principals {
-      identifiers = [
-        "ecs-tasks.amazonaws.com"
-      ]
-      type = "Service"
-    }
-  }
-}
+#   statement {
+#     actions = ["sts:AssumeRole"]
+#     effect  = "Allow"
+#     principals {
+#       identifiers = [
+#         "ecs-tasks.amazonaws.com"
+#       ]
+#       type = "Service"
+#     }
+#   }
+# }
 
-data "aws_iam_policy_document" "task_role_policy_doc" {
-  count = module.task_role_meta.enabled ? 1 : 0
+# data "aws_iam_policy_document" "task_role_policy_doc" {
+#   count = module.task_role_meta.enabled ? 1 : 0
 
-  statement {
-    sid       = "SsmMessages"
-    effect    = "Allow"
-    resources = ["*"]
+#   statement {
+#     sid       = "SsmMessages"
+#     effect    = "Allow"
+#     resources = ["*"]
 
-    actions = [
-      "ssmmessages:CreateControlChannel",
-      "ssmmessages:CreateDataChannel",
-      "ssmmessages:OpenControlChannel",
-      "ssmmessages:OpenDataChannel"
-    ]
-  }
+#     actions = [
+#       "ssmmessages:CreateControlChannel",
+#       "ssmmessages:CreateDataChannel",
+#       "ssmmessages:OpenControlChannel",
+#       "ssmmessages:OpenDataChannel"
+#     ]
+#   }
 
-  statement {
-    effect = "Allow"
-    actions = [
-      "logs:DescribeLogGroups",
-      "logs:CreateLogStream",
-      "logs:DescribeLogStreams",
-      "logs:PutLogEvents",
-    ]
-    resources = ["*"]
-  }
-}
+#   statement {
+#     effect = "Allow"
+#     actions = [
+#       "logs:DescribeLogGroups",
+#       "logs:CreateLogStream",
+#       "logs:DescribeLogStreams",
+#       "logs:PutLogEvents",
+#     ]
+#     resources = ["*"]
+#   }
+# }
 
 
 # ------------------------------------------------------------------------------

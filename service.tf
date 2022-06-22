@@ -69,7 +69,7 @@ module "service" {
 
   security_group_ids = [module.service_security_group.id]
 
-  task_role_arn      = [one(aws_iam_role.task_role[*].arn)]
+  task_role_arn      = [] #one(aws_iam_role.task_role[*].arn)]
   task_exec_role_arn = [one(aws_iam_role.task_exec_role[*].arn)]
   # service_role_arn   = one(aws_iam_role.service_role[*].arn)
   service_role_arn   = module.this.enabled ? "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${module.service_role_meta.id}" : ""
