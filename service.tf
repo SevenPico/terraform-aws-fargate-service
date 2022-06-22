@@ -69,10 +69,15 @@ module "service" {
 
   security_group_ids = [module.service_security_group.id]
 
-  task_role_arn      = [] #one(aws_iam_role.task_role[*].arn)]
-  task_exec_role_arn = [one(aws_iam_role.task_exec_role[*].arn)]
-  # service_role_arn   = one(aws_iam_role.service_role[*].arn)
-  service_role_arn   = module.this.enabled ? "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${module.service_role_meta.id}" : ""
+  task_role_arn      = []
+  task_exec_role_arn = []
+  service_role_arn   = ""
+
+  task_policy_arns = var.ecs_task_role_policy_arns
+  task_exec_policy_arns = flatten([
+    one(aws_iam_policy.task_exec_policy[*].arn),
+    var.ecs_task_exec_role_policy_arns,
+  ])
 
   vpc_id                             = var.vpc_id
   ecs_cluster_arn                    = var.ecs_cluster_arn
@@ -103,8 +108,6 @@ module "service" {
   task_placement_constraints = []
   service_placement_constraints = []
   network_mode = "awsvpc"
-  task_exec_policy_arns = []
-  task_policy_arns = []
   deployment_controller_type = "ECS"
   runtime_platform = []
   efs_volumes = []
@@ -137,7 +140,7 @@ module "service_security_group" {
 
   vpc_id = var.vpc_id
   security_group_name = [module.this.id]
-  security_group_description = "Controls access to the service"
+  security_group_description = "Controls access to ${module.this.id}"
 
   rules_map = var.service_security_group_rules_map
   rules = [for rule in [
