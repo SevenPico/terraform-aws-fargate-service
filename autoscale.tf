@@ -10,7 +10,7 @@ module "autoscale_meta" {
 }
 
 module "autoscale" {
-  source  = "cloudposse/ecs-cloudwatch-autoscaling/aws"
+  source  = "registry.terraform.io/cloudposse/ecs-cloudwatch-autoscaling/aws"
   version = "0.7.2"
   context = module.autoscale_meta
 
@@ -44,7 +44,7 @@ locals {
 }
 
 module "sns_alarms" {
-  source  = "cloudposse/ecs-cloudwatch-sns-alarms/aws"
+  source  = "registry.terraform.io/cloudposse/ecs-cloudwatch-sns-alarms/aws"
   version = "0.12.1"
   context = module.alarms_meta.context
 
