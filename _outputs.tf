@@ -33,3 +33,19 @@ output "ddb_dns_name" {
 output "ddb_reader_dns_name" {
   value = module.ddb.reader_endpoint
 }
+
+output "id" {
+  value = module.this.id
+}
+
+output "container_port" {
+  value = var.container_port
+}
+
+output "secrets_kms_key_arn" {
+  value = module.kms_key.key_arn
+}
+
+output "ddb_enabled" {
+  value = module.ddb_meta.enabled
+}
