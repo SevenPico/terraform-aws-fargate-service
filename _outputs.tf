@@ -42,6 +42,10 @@ output "container_port" {
   value = var.container_port
 }
 
+output "ddb_port" {
+  value = var.ddb_port
+}
+
 output "secrets_kms_key_arn" {
   value = module.kms_key.key_arn
 }
