@@ -153,6 +153,7 @@ data "aws_iam_policy_document" "pipeline_policy" {
     actions = [
       "s3:Get*",
       "s3:List*",
+      "s3:Put*"
     ]
     effect = "Allow"
     resources = [
