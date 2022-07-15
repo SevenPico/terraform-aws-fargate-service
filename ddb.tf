@@ -17,8 +17,8 @@ resource "aws_kms_key" "ddb" {
 }
 
 module "ddb" {
-  source  = "registry.terraform.io/cloudposse/documentdb-cluster/aws"
-  version = "0.13.0"
+  source  = "app.terraform.io/SevenPico/documentdb-cluster/aws"
+  version = "0.15.0.1"
   context = module.ddb_meta.context
 
   subnet_ids              = var.service_subnet_ids
