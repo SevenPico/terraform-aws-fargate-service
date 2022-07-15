@@ -155,6 +155,16 @@ variable "ecs_service_role_policy_arns" {
   default = []
 }
 
+variable "deployment_artifacts_s3_bucket_id" {
+  type = string
+  default = ""
+}
+
+variable "deployment_artifacts_s3_bucket_arn" {
+  type = string
+  default = ""
+}
+
 variable "cloudwatch_log_expiration_days" { default = 90 }
 variable "enable_glacier_transition" { default = false }
 variable "expiration_days" { default = 90 }
