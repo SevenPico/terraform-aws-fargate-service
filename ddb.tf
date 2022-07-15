@@ -23,7 +23,7 @@ module "ddb" {
 
   subnet_ids              = var.service_subnet_ids
   vpc_id                  = var.vpc_id
-  allowed_security_groups = concat([module.service.service_security_group_id], var.ddb_allowed_security_groups)
+  allowed_security_groups = concat([module.service_security_group.id], var.ddb_allowed_security_groups)
   db_port                 = var.ddb_port
   kms_key_id              = one(aws_kms_key.ddb[*].arn)
   master_username         = var.ddb_username
