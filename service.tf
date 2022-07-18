@@ -87,7 +87,7 @@ module "service" {
 
   platform_version                   = "1.4.0"
   propagate_tags                     = "SERVICE"
-  assign_public_ip                   = false
+  assign_public_ip                   = var.service_assign_public_ip
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
   health_check_grace_period_seconds  = 10

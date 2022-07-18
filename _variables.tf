@@ -132,6 +132,11 @@ variable "alb_internal" {
   default = true
 }
 
+variable "service_assign_public_ip" {
+  type    = bool
+  default = false
+}
+
 variable "container_entrypoint" {
   default = null
 }
