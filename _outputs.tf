@@ -26,6 +26,10 @@ output "nlb_zone_id" {
   value = one(module.nlb[*].nlb_zone_id)
 }
 
+output "alb_url" {
+  value = "https://${module.alb.alb_dns_name}:${var.container_port}"
+}
+
 output "ddb_url" {
   value = "mongodb://${var.ddb_username}:${var.ddb_password}@${module.ddb.endpoint}:${var.ddb_port}/default?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
 }
