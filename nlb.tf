@@ -66,3 +66,28 @@ resource "aws_lb_target_group_attachment" "nlb" {
   target_group_arn = one(module.nlb[*].default_target_group_arn)
   target_id        = module.alb.alb_arn
 }
+
+
+# ------------------------------------------------------------------------------
+# Network Load Balancer : DNS Record
+# ------------------------------------------------------------------------------
+module "nlb_dns_meta" {
+  source  = "registry.terraform.io/cloudposse/label/null"
+  version = "0.25.0"
+  context = var.dns_context
+  attributes = [module.this.name, "nlb"]
+  enabled = module.nlb_meta.enabled && var.route53_records_enabled
+}
+
+resource "aws_route53_record" "nlb" {
+  count   = module.nlb_dns_meta.enabled ? 1 : 0
+  zone_id = var.route53_zone_id
+  name    = module.nlb_dns_meta.descriptors["FQDN"]
+  type    = "A"
+  alias {
+    name                   = one(module.nlb[*].nlb_dns_name)
+    zone_id                = one(module.nlb[*].nlb_zone_id)
+    evaluate_target_health = true
+  }
+}
+

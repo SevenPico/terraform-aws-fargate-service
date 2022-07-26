@@ -170,6 +170,21 @@ variable "deployment_artifacts_s3_bucket_arn" {
   default = ""
 }
 
+variable "route53_records_enabled" {
+  type = bool
+  default = false
+}
+
+variable "route53_zone_id" {
+  type = string
+  default = ""
+}
+
+variable "dns_context" {
+  type = any
+  default = {}
+}
+
 variable "cloudwatch_log_expiration_days" { default = 90 }
 variable "enable_glacier_transition" { default = false }
 variable "expiration_days" { default = 90 }

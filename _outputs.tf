@@ -18,6 +18,14 @@ output "alb_dns_name" {
   value = module.alb.alb_dns_name
 }
 
+output "alb_dns_alias" {
+  value = module.alb_dns_meta.descriptors["FQDN"]
+}
+
+output "nlb_dns_alias" {
+  value = module.nlb_dns_meta.descriptors["FQDN"]
+}
+
 output "nlb_dns_name" {
   value = one(module.nlb[*].nlb_dns_name)
 }
@@ -27,11 +35,11 @@ output "nlb_zone_id" {
 }
 
 output "alb_url" {
-  value = "https://${module.alb.alb_dns_name}:${var.container_port}"
+  value = "https://${module.alb_dns_meta.descriptors["FQDN"]}:${var.container_port}"
 }
 
 output "ddb_url" {
-  value = "mongodb://${var.ddb_username}:${var.ddb_password}@${module.ddb.endpoint}:${var.ddb_port}/default?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
+  value = "mongodb://${var.ddb_username}:${var.ddb_password}@${module.ddb_dns_meta.descriptors["FQDN"]}:${var.ddb_port}/default?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
 }
 
 output "ddb_dns_name" {

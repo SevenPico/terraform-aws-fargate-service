@@ -16,23 +16,36 @@ resource "aws_kms_key" "ddb" {
   tags                    = module.ddb_meta.tags
 }
 
+module "ddb_dns_meta" {
+  source  = "registry.terraform.io/cloudposse/label/null"
+  version = "0.25.0"
+  context = var.dns_context
+  attributes = [module.this.name, "ddb"]
+}
+
+module "ddb_reader_dns_meta" {
+  source  = "registry.terraform.io/cloudposse/label/null"
+  version = "0.25.0"
+  context = module.ddb_dns_meta.context
+  attributes = ["reader"]
+}
+
 module "ddb" {
   source  = "registry.terraform.io/cloudposse/documentdb-cluster/aws"
   version = "0.13.0"
   context = module.ddb_meta.context
 
-  subnet_ids              = var.service_subnet_ids
-  vpc_id                  = var.vpc_id
-  allowed_security_groups = concat([module.service_security_group.id], var.ddb_allowed_security_groups)
-  db_port                 = var.ddb_port
-  kms_key_id              = one(aws_kms_key.ddb[*].arn)
-  master_username         = var.ddb_username
-  master_password         = var.ddb_password
-  retention_period        = var.ddb_retention_period
-
-  cluster_dns_name                = "" #module.ddb_dns_meta.descriptors["FQDN"]
-  reader_dns_name                 = "" #module.ddb_reader_dns_meta.descriptors["FQDN"]
-  zone_id                         = "" #var.route53_zone_id
+  subnet_ids                      = var.service_subnet_ids
+  vpc_id                          = var.vpc_id
+  allowed_security_groups         = concat([module.service_security_group.id], var.ddb_allowed_security_groups)
+  db_port                         = var.ddb_port
+  kms_key_id                      = one(aws_kms_key.ddb[*].arn)
+  master_username                 = var.ddb_username
+  master_password                 = var.ddb_password
+  retention_period                = var.ddb_retention_period
+  cluster_dns_name                = module.ddb_dns_meta.descriptors["FQDN"]
+  reader_dns_name                 = module.ddb_reader_dns_meta.descriptors["FQDN"]
+  zone_id                         = var.route53_records_enabled ? var.route53_zone_id : ""
   allowed_cidr_blocks             = []
   apply_immediately               = true
   auto_minor_version_upgrade      = true
