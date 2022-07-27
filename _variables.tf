@@ -127,6 +127,11 @@ variable "alb_security_group_rules_map" {
   default = {}
 }
 
+variable "ecs_load_balancer" {
+  type    = any
+  default = {}
+}
+
 variable "alb_internal" {
   type    = bool
   default = true

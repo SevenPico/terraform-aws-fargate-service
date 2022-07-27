@@ -60,12 +60,12 @@ module "service" {
   container_definition_json = module.container_definition.json_map_encoded_list
   container_port            = var.container_port
   desired_count             = var.desired_count
-  ecs_load_balancers = [{
+  ecs_load_balancers = concat(var.ecs_load_balancer, [{
     elb_name : null
     target_group_arn : module.alb.default_target_group_arn
     container_name : module.this.id
     container_port : var.container_port
-  }]
+  }])
 
   security_group_ids = [module.service_security_group.id]
 
