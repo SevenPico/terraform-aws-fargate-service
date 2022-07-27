@@ -75,7 +75,7 @@ module "nlb_dns_meta" {
   source  = "registry.terraform.io/cloudposse/label/null"
   version = "0.25.0"
   context = var.dns_context
-  attributes = [module.this.name, "nlb"]
+  attributes = ["${module.this.name}-nlb"]
   enabled = module.nlb_meta.enabled && var.route53_records_enabled
 }
 

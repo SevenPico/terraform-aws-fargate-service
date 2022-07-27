@@ -20,14 +20,14 @@ module "ddb_dns_meta" {
   source  = "registry.terraform.io/cloudposse/label/null"
   version = "0.25.0"
   context = var.dns_context
-  attributes = [module.this.name, "ddb"]
+  attributes = ["${module.this.name}-ddb"]
 }
 
 module "ddb_reader_dns_meta" {
   source  = "registry.terraform.io/cloudposse/label/null"
   version = "0.25.0"
   context = module.ddb_dns_meta.context
-  attributes = ["reader"]
+  attributes = ["${module.this.name}-ddb-reader"]
 }
 
 module "ddb" {
