@@ -127,7 +127,7 @@ variable "alb_security_group_rules_map" {
   default = {}
 }
 
-variable "ecs_load_balancer" {
+variable "ecs_load_balancers_map" {
   type    = any
   default = {}
 }
