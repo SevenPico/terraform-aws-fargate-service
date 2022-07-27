@@ -16,20 +16,6 @@ resource "aws_kms_key" "ddb" {
   tags                    = module.ddb_meta.tags
 }
 
-module "ddb_dns_meta" {
-  source  = "registry.terraform.io/cloudposse/label/null"
-  version = "0.25.0"
-  context = var.dns_context
-  attributes = ["${module.this.name}-ddb"]
-}
-
-module "ddb_reader_dns_meta" {
-  source  = "registry.terraform.io/cloudposse/label/null"
-  version = "0.25.0"
-  context = module.ddb_dns_meta.context
-  attributes = ["${module.this.name}-ddb-reader"]
-}
-
 module "ddb" {
   source  = "registry.terraform.io/cloudposse/documentdb-cluster/aws"
   version = "0.13.0"
@@ -43,9 +29,9 @@ module "ddb" {
   master_username                 = var.ddb_username
   master_password                 = var.ddb_password
   retention_period                = var.ddb_retention_period
-  cluster_dns_name                = module.ddb_dns_meta.descriptors["FQDN"]
-  reader_dns_name                 = module.ddb_reader_dns_meta.descriptors["FQDN"]
-  zone_id                         = var.route53_records_enabled ? var.route53_zone_id : ""
+  cluster_dns_name                = ""
+  reader_dns_name                 = ""
+  zone_id                         = ""
   allowed_cidr_blocks             = []
   apply_immediately               = true
   auto_minor_version_upgrade      = true
@@ -66,4 +52,42 @@ module "ddb" {
     name         = "tls"
     value        = "enabled"
   }]
+}
+
+
+# ------------------------------------------------------------------------------
+# DDB : DNS Record
+# ------------------------------------------------------------------------------
+module "ddb_dns_meta" {
+  source  = "registry.terraform.io/cloudposse/label/null"
+  version = "0.25.0"
+  context = var.dns_context
+  enabled = module.ddb_meta.enabled && var.route53_records_enabled
+  attributes = ["${module.this.name}-ddb"]
+}
+
+module "ddb_reader_dns_meta" {
+  source  = "registry.terraform.io/cloudposse/label/null"
+  version = "0.25.0"
+  context = var.dns_context
+  enabled = module.ddb_meta.enabled && var.route53_records_enabled
+  attributes = ["${module.this.name}-ddb-reader"]
+}
+
+resource "aws_route53_record" "ddb" {
+  count   = module.ddb_dns_meta.enabled ? 1 : 0
+  zone_id = var.route53_zone_id
+  type    = "CNAME"
+  name    = module.ddb_dns_meta.descriptors["FQDN"]
+  records = [module.ddb.endpoint]
+  ttl     = 300
+}
+
+resource "aws_route53_record" "ddb_reader" {
+  count   = module.ddb_reader_dns_meta.enabled ? 1 : 0
+  zone_id = var.route53_zone_id
+  type    = "CNAME"
+  name    = module.ddb_reader_dns_meta.descriptors["FQDN"]
+  records = [module.ddb.reader_endpoint]
+  ttl     = 300
 }
