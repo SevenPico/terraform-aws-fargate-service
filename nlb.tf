@@ -64,7 +64,7 @@ module "nlb" {
 resource "aws_lb_target_group_attachment" "nlb" {
   count            = module.nlb_meta.enabled ? 1 : 0
   target_group_arn = one(module.nlb[*].default_target_group_arn)
-  target_id        = module.alb[0].alb_arn
+  target_id        = one(module.alb[*].alb_arn)
 }
 
 
