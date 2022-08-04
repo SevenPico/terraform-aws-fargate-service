@@ -41,6 +41,16 @@ variable "enable_ddb" {
   default = false
 }
 
+variable "enable_alb" {
+  type    = bool
+  default = true
+}
+
+variable "ecs_additional_load_balancer_mapping" {
+  type    = any
+  default = []
+}
+
 variable "secrets" {
   type    = map(string)
   default = {}
@@ -161,27 +171,27 @@ variable "ecs_service_role_policy_arns" {
 }
 
 variable "deployment_artifacts_s3_bucket_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "deployment_artifacts_s3_bucket_arn" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "route53_records_enabled" {
-  type = bool
+  type    = bool
   default = false
 }
 
 variable "route53_zone_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "dns_context" {
-  type = any
+  type    = any
   default = {}
 }
 

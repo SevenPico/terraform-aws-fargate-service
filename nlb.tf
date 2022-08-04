@@ -64,7 +64,7 @@ module "nlb" {
 resource "aws_lb_target_group_attachment" "nlb" {
   count            = module.nlb_meta.enabled ? 1 : 0
   target_group_arn = one(module.nlb[*].default_target_group_arn)
-  target_id        = module.alb.alb_arn
+  target_id        = module.alb[0].alb_arn
 }
 
 
@@ -72,11 +72,11 @@ resource "aws_lb_target_group_attachment" "nlb" {
 # Network Load Balancer : DNS Record
 # ------------------------------------------------------------------------------
 module "nlb_dns_meta" {
-  source  = "registry.terraform.io/cloudposse/label/null"
-  version = "0.25.0"
-  context = var.dns_context
+  source     = "registry.terraform.io/cloudposse/label/null"
+  version    = "0.25.0"
+  context    = var.dns_context
   attributes = ["${module.this.name}-nlb"]
-  enabled = module.nlb_meta.enabled && var.route53_records_enabled
+  enabled    = module.nlb_meta.enabled && var.route53_records_enabled
 }
 
 resource "aws_route53_record" "nlb" {

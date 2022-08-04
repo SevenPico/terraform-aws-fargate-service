@@ -59,18 +59,18 @@ module "ddb" {
 # DDB : DNS Record
 # ------------------------------------------------------------------------------
 module "ddb_dns_meta" {
-  source  = "registry.terraform.io/cloudposse/label/null"
-  version = "0.25.0"
-  context = var.dns_context
-  enabled = module.ddb_meta.enabled && var.route53_records_enabled
+  source     = "registry.terraform.io/cloudposse/label/null"
+  version    = "0.25.0"
+  context    = var.dns_context
+  enabled    = module.ddb_meta.enabled && var.route53_records_enabled
   attributes = ["${module.this.name}-ddb"]
 }
 
 module "ddb_reader_dns_meta" {
-  source  = "registry.terraform.io/cloudposse/label/null"
-  version = "0.25.0"
-  context = var.dns_context
-  enabled = module.ddb_meta.enabled && var.route53_records_enabled
+  source     = "registry.terraform.io/cloudposse/label/null"
+  version    = "0.25.0"
+  context    = var.dns_context
+  enabled    = module.ddb_meta.enabled && var.route53_records_enabled
   attributes = ["${module.this.name}-ddb-reader"]
 }
 
