@@ -15,7 +15,7 @@ output "ddb_security_group_id" {
 }
 
 output "alb_dns_name" {
-  value = module.alb[0].alb_dns_name
+  value = one(module.alb[*].alb_dns_name)
 }
 
 output "alb_dns_alias" {

@@ -62,7 +62,7 @@ module "service" {
   desired_count             = var.desired_count
   ecs_load_balancers = concat([{
     elb_name : null
-    target_group_arn : module.alb[0].default_target_group_arn
+    target_group_arn : one(module.alb[*].default_target_group_arn)
     container_name : module.this.id
     container_port : var.container_port
   }], var.ecs_additional_load_balancer_mapping)
