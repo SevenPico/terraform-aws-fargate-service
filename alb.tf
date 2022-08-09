@@ -5,6 +5,7 @@ module "alb_meta" {
   source          = "registry.terraform.io/cloudposse/label/null"
   version         = "0.25.0"
   context         = module.this.context
+  enabled         = module.this.context.enabled && var.enable_alb
   attributes      = ["pvt", "alb"]
   id_length_limit = 32
 }
@@ -17,6 +18,7 @@ module "alb_tgt_meta" {
 }
 
 module "alb" {
+  count   = module.alb_meta.enabled ? 1 : 0
   source  = "registry.terraform.io/cloudposse/alb/aws"
   version = "0.36.0"
   context = module.alb_meta.context
@@ -90,11 +92,11 @@ module "alb_security_group" {
 # Application Load Balancer : DNS Record
 # ------------------------------------------------------------------------------
 module "alb_dns_meta" {
-  source  = "registry.terraform.io/cloudposse/label/null"
-  version = "0.25.0"
-  context = var.dns_context
+  source     = "registry.terraform.io/cloudposse/label/null"
+  version    = "0.25.0"
+  context    = var.dns_context
   attributes = [module.this.name]
-  enabled = module.alb_meta.enabled && var.route53_records_enabled
+  enabled    = module.alb_meta.enabled && var.route53_records_enabled
 }
 
 resource "aws_route53_record" "alb" {
@@ -102,6 +104,6 @@ resource "aws_route53_record" "alb" {
   zone_id = var.route53_zone_id
   type    = "CNAME"
   name    = module.alb_dns_meta.descriptors["FQDN"]
-  records = [module.alb.alb_dns_name]
+  records = one(module.alb[*].alb_dns_name)
   ttl     = 300
 }

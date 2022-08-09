@@ -60,12 +60,12 @@ module "service" {
   container_definition_json = module.container_definition.json_map_encoded_list
   container_port            = var.container_port
   desired_count             = var.desired_count
-  ecs_load_balancers = [{
+  ecs_load_balancers = concat([{
     elb_name : null
-    target_group_arn : module.alb.default_target_group_arn
+    target_group_arn : one(module.alb[*].default_target_group_arn)
     container_name : module.this.id
     container_port : var.container_port
-  }]
+  }], var.ecs_additional_load_balancer_mapping)
 
   security_group_ids = [module.service_security_group.id]
 
@@ -113,7 +113,7 @@ module "service" {
   efs_volumes                        = []
   docker_volumes                     = []
   proxy_configuration                = null
-  ignore_changes_task_definition     = true
+  ignore_changes_task_definition     = var.ignore_changes_task_definition
   ignore_changes_desired_count       = false
   capacity_provider_strategies       = []
   service_registries                 = []
