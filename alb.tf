@@ -104,6 +104,6 @@ resource "aws_route53_record" "alb" {
   zone_id = var.route53_zone_id
   type    = "CNAME"
   name    = module.alb_dns_meta.descriptors["FQDN"]
-  records = [module.alb[0].alb_dns_name]
+  records = one(module.alb[*].alb_dns_name)
   ttl     = 300
 }

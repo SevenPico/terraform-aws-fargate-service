@@ -113,7 +113,7 @@ module "service" {
   efs_volumes                        = []
   docker_volumes                     = []
   proxy_configuration                = null
-  ignore_changes_task_definition     = false
+  ignore_changes_task_definition     = var.ignore_changes_task_definition
   ignore_changes_desired_count       = false
   capacity_provider_strategies       = []
   service_registries                 = []
