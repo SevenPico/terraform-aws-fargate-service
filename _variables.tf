@@ -88,6 +88,11 @@ variable "alb_http_redirect" {
   default = false
 }
 
+variable "alb_http_enabled" {
+  type = bool
+  default = false
+}
+
 variable "health_check_path" {
   default = "/health"
 }

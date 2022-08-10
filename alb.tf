@@ -36,7 +36,6 @@ module "alb" {
   health_check_port                  = var.container_port
   health_check_timeout               = 120
   health_check_matcher               = var.health_check_matcher
-  http_enabled                       = false
   https_enabled                      = true
   https_port                         = 443
   http_port                          = 80
@@ -52,6 +51,7 @@ module "alb" {
   target_group_protocol              = var.alb_target_group_protocol
   vpc_id                             = var.vpc_id
   http_redirect                      = var.alb_http_redirect
+  http_enabled                       = var.alb_http_enabled
 }
 
 
