@@ -52,9 +52,9 @@ variable "ecs_additional_load_balancer_mapping" {
 }
 
 variable "ignore_changes_task_definition" {
-   type = bool
-   default = true
- }
+  type    = bool
+  default = true
+}
 
 variable "secrets" {
   type    = map(string)
