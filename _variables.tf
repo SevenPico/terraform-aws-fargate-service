@@ -83,6 +83,11 @@ variable "alb_target_group_protocol" {
   default = "HTTPS"
 }
 
+variable "alb_http_redirect" {
+  type = bool
+  default = false
+}
+
 variable "health_check_path" {
   default = "/health"
 }

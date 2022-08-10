@@ -51,7 +51,7 @@ module "alb" {
   target_group_port                  = var.container_port
   target_group_protocol              = var.alb_target_group_protocol
   vpc_id                             = var.vpc_id
-  http_redirect                      = (var.alb_target_group_protocol == "HTTPS")
+  http_redirect                      = var.alb_http_redirect
 }
 
 
