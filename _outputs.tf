@@ -77,3 +77,7 @@ output "alb_http_listener_arn" {
 output "alb_https_listener_arn" {
   value = one(module.alb[*].https_listener_arn)
 }
+
+output "alb_http_redirect_listener_arn" {
+  value = one(module.alb[*].http_redirect_listener_arn)
+}
