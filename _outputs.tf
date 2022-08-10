@@ -69,3 +69,11 @@ output "secrets_kms_key_arn" {
 output "ddb_enabled" {
   value = module.ddb_meta.enabled
 }
+
+output "alb_http_listener_arn" {
+  value = one(module.alb[*].http_listener_arn)
+}
+
+output "alb_https_listener_arn" {
+  value = one(module.alb[*].https_listener_arn)
+}
