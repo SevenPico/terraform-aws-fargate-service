@@ -19,11 +19,11 @@ output "alb_dns_name" {
 }
 
 output "alb_dns_alias" {
-  value = module.alb_dns_meta.descriptors["FQDN"]
+  value = module.alb_dns_context.descriptors["FQDN"]
 }
 
 output "nlb_dns_alias" {
-  value = module.nlb_dns_meta.descriptors["FQDN"]
+  value = module.nlb_dns_context.descriptors["FQDN"]
 }
 
 output "nlb_dns_name" {
@@ -35,11 +35,11 @@ output "nlb_zone_id" {
 }
 
 output "alb_url" {
-  value = "https://${module.alb_dns_meta.descriptors["FQDN"]}:${var.container_port}"
+  value = "https://${module.alb_dns_context.descriptors["FQDN"]}:${var.container_port}"
 }
 
 output "ddb_url" {
-  value = "mongodb://${var.ddb_username}:${var.ddb_password}@${module.ddb_dns_meta.descriptors["FQDN"]}:${var.ddb_port}/default?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
+  value = "mongodb://${var.ddb_username}:${var.ddb_password}@${module.ddb_dns_context.descriptors["FQDN"]}:${var.ddb_port}/default?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
 }
 
 output "ddb_dns_name" {
@@ -51,7 +51,7 @@ output "ddb_reader_dns_name" {
 }
 
 output "id" {
-  value = module.this.id
+  value = module.context.id
 }
 
 output "container_port" {
@@ -63,11 +63,11 @@ output "ddb_port" {
 }
 
 output "secrets_kms_key_arn" {
-  value = module.kms_key.key_arn
+  value = module.service_configuration.kms_key_arn
 }
 
 output "ddb_enabled" {
-  value = module.ddb_meta.enabled
+  value = module.ddb_context.enabled
 }
 
 output "alb_http_listener_arn" {

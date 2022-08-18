@@ -1,18 +1,30 @@
 # ------------------------------------------------------------------------------
-# Service Autoscaling
+# Service Autoscaling Contexts
 # ------------------------------------------------------------------------------
-module "autoscale_meta" {
-  source     = "registry.terraform.io/cloudposse/label/null"
-  version    = "0.25.0"
-  context    = module.this.context
+module "autoscale_context" {
+  source     = "app.terraform.io/SevenPico/context/null"
+  version    = "1.0.1"
+  context    = module.context.self
   attributes = ["autoscale"]
-  enabled    = module.this.enabled && var.autoscale_enabled
+  enabled    = module.context.enabled && var.autoscale_enabled
 }
 
+module "alarms_context" {
+  source     = "app.terraform.io/SevenPico/context/null"
+  version    = "1.0.1"
+  context    = module.context.self
+  attributes = ["alarms"]
+  enabled    = module.context.enabled && var.alarms_enabled
+}
+
+
+# ------------------------------------------------------------------------------
+# Service Autoscaling
+# ------------------------------------------------------------------------------
 module "autoscale" {
   source  = "registry.terraform.io/cloudposse/ecs-cloudwatch-autoscaling/aws"
   version = "0.7.2"
-  context = module.autoscale_meta
+  context = module.autoscale_context
 
   service_name          = module.service.service_name
   cluster_name          = var.ecs_cluster_name
@@ -28,14 +40,6 @@ module "autoscale" {
 # ------------------------------------------------------------------------------
 # Service Utilization Alarms
 # ------------------------------------------------------------------------------
-module "alarms_meta" {
-  source     = "registry.terraform.io/cloudposse/label/null"
-  version    = "0.25.0"
-  context    = module.this.context
-  attributes = ["alarms"]
-  enabled    = module.this.enabled && var.alarms_enabled
-}
-
 locals {
   cpu_utilization_high_alarm_actions    = var.autoscale_enabled && var.autoscale_dimension == "cpu" ? module.autoscale.scale_up_policy_arn : ""
   cpu_utilization_low_alarm_actions     = var.autoscale_enabled && var.autoscale_dimension == "cpu" ? module.autoscale.scale_down_policy_arn : ""
@@ -46,7 +50,7 @@ locals {
 module "sns_alarms" {
   source  = "registry.terraform.io/cloudposse/ecs-cloudwatch-sns-alarms/aws"
   version = "0.12.1"
-  context = module.alarms_meta.context
+  context = module.alarms_context.self
 
   cluster_name = var.ecs_cluster_name
   service_name = module.service.service_name

@@ -1,70 +1,102 @@
 # ------------------------------------------------------------------------------
-# Application Load Balancer
+# Application Load Balancer Contexts
 # ------------------------------------------------------------------------------
-module "alb_meta" {
-  source          = "registry.terraform.io/cloudposse/label/null"
-  version         = "0.25.0"
-  context         = module.this.context
-  enabled         = module.this.context.enabled && var.enable_alb
+module "alb_context" {
+  source          = "app.terraform.io/SevenPico/context/null"
+  version         = "1.0.1"
+  context         = module.context.self
+  enabled         = module.context.enabled && var.enable_alb
   attributes      = ["pvt", "alb"]
   id_length_limit = 32
 }
 
-module "alb_tgt_meta" {
-  source     = "registry.terraform.io/cloudposse/label/null"
-  version    = "0.25.0"
-  context    = module.alb_meta.context
-  attributes = ["tgt"]
+module "alb_dns_context" {
+  source  = "app.terraform.io/SevenPico/context/null"
+  version = "1.0.1"
+  context = module.alb_context.self
+  enabled = module.alb_context.enabled && var.route53_records_enabled
 }
 
-module "alb" {
-  count   = module.alb_meta.enabled ? 1 : 0
-  source  = "registry.terraform.io/cloudposse/alb/aws"
-  version = "0.36.0"
-  context = module.alb_meta.context
 
-  access_logs_enabled                = var.access_logs_s3_bucket_id != ""
-  access_logs_prefix                 = module.alb_meta.id
-  access_logs_s3_bucket_id           = var.access_logs_s3_bucket_id
-  certificate_arn                    = var.acm_certificate_arn
-  deregistration_delay               = 20
-  enable_glacier_transition          = var.enable_glacier_transition
-  expiration_days                    = var.expiration_days
-  glacier_transition_days            = var.glacier_transition_days
-  health_check_interval              = 300
-  health_check_path                  = var.health_check_path
-  health_check_port                  = var.container_port
-  health_check_timeout               = 120
-  health_check_matcher               = var.health_check_matcher
-  https_enabled                      = true
-  https_port                         = 443
-  http_port                          = 80
-  https_ssl_policy                   = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-  internal                           = var.alb_internal #true
-  noncurrent_version_expiration_days = var.noncurrent_version_expiration_days
-  noncurrent_version_transition_days = var.noncurrent_version_transition_days
-  security_group_ids                 = [module.alb_security_group.id]
-  standard_transition_days           = var.standard_transition_days
-  subnet_ids                         = var.service_subnet_ids
-  target_group_name                  = module.alb_tgt_meta.id
-  target_group_port                  = var.container_port
-  target_group_protocol              = var.alb_target_group_protocol
-  vpc_id                             = var.vpc_id
-  http_redirect                      = var.alb_http_redirect
-  http_enabled                       = var.alb_http_enabled
+module "alb_tgt_context" {
+  source     = "app.terraform.io/SevenPico/context/null"
+  version    = "1.0.1"
+  context    = module.alb_context.self
+  attributes = ["tgt"]
 }
 
 
 # ------------------------------------------------------------------------------
-# Application Load Balancer : Security Group
+# Application Load Balancer
+# ------------------------------------------------------------------------------
+module "alb" {
+  count   = module.alb_context.enabled ? 1 : 0
+  source  = "app.terraform.io/SevenPico/alb/aws"
+  version = "1.4.0.1"
+  context = module.alb_context.self
+
+  access_logs_enabled               = var.access_logs_s3_bucket_id != ""
+  access_logs_prefix                = module.alb_context.id
+  access_logs_s3_bucket_id          = var.access_logs_s3_bucket_id
+  additional_certs                  = []
+  certificate_arn                   = var.acm_certificate_arn
+  cross_zone_load_balancing_enabled = true
+  default_target_group_enabled      = true
+  deletion_protection_enabled       = var.lb_deletion_protection_enabled
+  deregistration_delay              = 20
+  drop_invalid_header_fields        = false
+  health_check_healthy_threshold    = 2
+  health_check_interval             = 300
+  health_check_matcher              = var.health_check_matcher
+  health_check_path                 = var.health_check_path
+  health_check_port                 = var.container_port
+  health_check_protocol             = null
+  health_check_timeout              = 120
+  health_check_unhealthy_threshold  = 2
+  http2_enabled                     = true
+  http_enabled                      = var.alb_http_enabled
+  http_ingress_cidr_blocks          = ["0.0.0.0/0"]
+  http_ingress_prefix_list_ids      = []
+  http_port                         = 80
+  http_redirect                     = var.alb_http_redirect
+  https_enabled                     = true
+  https_ingress_cidr_blocks         = ["0.0.0.0/0"]
+  https_ingress_prefix_list_ids     = []
+  https_port                        = 443
+  https_ssl_policy                  = var.alb_https_ssl_policy
+  idle_timeout                      = 60
+  internal                          = var.alb_internal #true
+  ip_address_type                   = "ipv4"
+  listener_http_fixed_response      = null
+  listener_https_fixed_response     = null
+  load_balancer_name                = ""
+  load_balancer_name_max_length     = 32
+  security_group_enabled            = true
+  security_group_ids                = [module.alb_security_group.id]
+  slow_start                        = null
+  stickiness                        = null
+  subnet_ids                        = var.service_subnet_ids
+  target_group_additional_tags      = {}
+  target_group_name                 = module.alb_tgt_context.id
+  target_group_name_max_length      = 32
+  target_group_port                 = var.container_port
+  target_group_protocol             = var.alb_target_group_protocol
+  target_group_protocol_version     = "HTTP1"
+  target_group_target_type          = "ip"
+  vpc_id                            = var.vpc_id
+}
+
+
+# ------------------------------------------------------------------------------
+# Application Load Balancer Security Group
 # ------------------------------------------------------------------------------
 module "alb_security_group" {
   source  = "registry.terraform.io/cloudposse/security-group/aws"
   version = "0.4.3"
-  context = module.alb_meta.context
+  context = module.alb_context.self
 
   vpc_id                     = var.vpc_id
-  security_group_name        = [module.alb_meta.id]
+  security_group_name        = [module.alb_context.id]
   security_group_description = "Controls access to the ALB"
   create_before_destroy      = true
   rules_map                  = var.alb_security_group_rules_map
@@ -90,21 +122,13 @@ module "alb_security_group" {
 
 
 # ------------------------------------------------------------------------------
-# Application Load Balancer : DNS Record
+# Application Load Balancer DNS
 # ------------------------------------------------------------------------------
-module "alb_dns_meta" {
-  source     = "registry.terraform.io/cloudposse/label/null"
-  version    = "0.25.0"
-  context    = var.dns_context
-  attributes = [module.this.name]
-  enabled    = module.alb_meta.enabled && var.route53_records_enabled
-}
-
 resource "aws_route53_record" "alb" {
-  count   = module.alb_dns_meta.enabled ? 1 : 0
+  count   = module.alb_dns_context.enabled ? 1 : 0
   zone_id = var.route53_zone_id
   type    = "CNAME"
-  name    = module.alb_dns_meta.descriptors["FQDN"]
+  name    = module.alb_dns_context.descriptors["FQDN"]
   records = [one(module.alb[*].alb_dns_name)]
   ttl     = 300
 }

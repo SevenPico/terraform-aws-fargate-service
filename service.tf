@@ -1,15 +1,12 @@
 # ------------------------------------------------------------------------------
 # Service Container Definition
 # ------------------------------------------------------------------------------
-data "aws_region" "current" {}
-data "aws_caller_identity" "current" {}
-
 module "container_definition" {
   source  = "registry.terraform.io/cloudposse/ecs-container-definition/aws"
   version = "0.58.1"
 
   container_image = var.container_image
-  container_name  = module.this.id
+  container_name  = module.context.id
   command         = var.service_command
   entrypoint      = var.container_entrypoint
 
@@ -43,7 +40,7 @@ module "container_definition" {
   }])
 
   map_secrets = merge(
-    { for key in keys(var.secrets) : key => "${join("", aws_secretsmanager_secret.container[*].arn)}:${key}:AWSCURRENT:" },
+    { for key in keys(var.secrets) : key => "${module.service_configuration.arn}:${key}:AWSCURRENT:" },
     var.additional_secrets
   )
 }
@@ -55,7 +52,7 @@ module "container_definition" {
 module "service" {
   source  = "registry.terraform.io/cloudposse/ecs-alb-service-task/aws"
   version = "0.64.0"
-  context = module.this.context
+  context = module.context.self
 
   container_definition_json = module.container_definition.json_map_encoded_list
   container_port            = var.container_port
@@ -63,7 +60,7 @@ module "service" {
   ecs_load_balancers = concat([{
     elb_name : null
     target_group_arn : one(module.alb[*].default_target_group_arn)
-    container_name : module.this.id
+    container_name : module.context.id
     container_port : var.container_port
   }], var.ecs_additional_load_balancer_mapping)
 
@@ -136,11 +133,11 @@ module "service" {
 module "service_security_group" {
   source  = "registry.terraform.io/cloudposse/security-group/aws"
   version = "0.4.3"
-  context = module.this.context
+  context = module.context.self
 
   vpc_id                     = var.vpc_id
-  security_group_name        = [module.this.id]
-  security_group_description = "Controls access to ${module.this.id}"
+  security_group_name        = [module.context.id]
+  security_group_description = "Controls access to ${module.context.id}"
 
   create_before_destroy = true
 
@@ -154,7 +151,7 @@ module "service_security_group" {
       to_port                  = var.container_port
       source_security_group_id = module.alb_security_group.id
     },
-    module.ddb_meta.enabled ? {
+    module.ddb_context.enabled ? {
       description              = "Allow egress from service to DocumentDB"
       type                     = "egress"
       protocol                 = "tcp"

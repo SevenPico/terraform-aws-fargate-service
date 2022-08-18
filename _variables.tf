@@ -46,6 +46,11 @@ variable "enable_alb" {
   default = true
 }
 
+variable "lb_deletion_protection_enabled" {
+  type    = bool
+  default = false
+}
+
 variable "ecs_additional_load_balancer_mapping" {
   type    = any
   default = []
@@ -99,6 +104,16 @@ variable "health_check_path" {
 
 variable "health_check_matcher" {
   default = "200-399"
+}
+
+variable "alb_https_ssl_policy" {
+  default = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
+  type = string
+}
+
+variable "nlb_tls_ssl_policy" {
+  default = "ELBSecurityPolicy-2016-08"
+  type = string
 }
 
 variable "ecs_cluster_arn" {
@@ -205,17 +220,28 @@ variable "route53_zone_id" {
   default = ""
 }
 
-variable "dns_context" {
-  type    = any
-  default = {}
-}
+#variable "dns_context" {
+#  type    = any
+#  default = {}
+#}
 
 variable "cloudwatch_log_expiration_days" { default = 90 }
-variable "enable_glacier_transition" { default = false }
-variable "expiration_days" { default = 90 }
-variable "force_destroy" { default = true }
-variable "glacier_transition_days" { default = 60 }
-variable "lifecycle_rule_enabled" { default = false }
-variable "noncurrent_version_expiration_days" { default = 30 }
-variable "noncurrent_version_transition_days" { default = 30 }
-variable "standard_transition_days" { default = 30 }
+#variable "enable_glacier_transition" { default = false }
+#variable "expiration_days" { default = 90 }
+#variable "force_destroy" { default = true }
+#variable "glacier_transition_days" { default = 60 }
+#variable "lifecycle_rule_enabled" { default = false }
+#variable "noncurrent_version_expiration_days" { default = 30 }
+#variable "noncurrent_version_transition_days" { default = 30 }
+#variable "standard_transition_days" { default = 30 }
+
+
+variable "kms_key_deletion_window_in_days" {
+  type    = number
+  default = 30
+}
+
+variable "kms_key_enable_key_rotation" {
+  type    = bool
+  default = true
+}

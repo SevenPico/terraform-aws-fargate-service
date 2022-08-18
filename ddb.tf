@@ -1,31 +1,63 @@
 # ------------------------------------------------------------------------------
-# Document Database (Optional)
+# Document Database Context
 # ------------------------------------------------------------------------------
-module "ddb_meta" {
-  source     = "registry.terraform.io/cloudposse/label/null"
-  version    = "0.25.0"
-  context    = module.this.context
+module "ddb_context" {
+  source     = "app.terraform.io/SevenPico/context/null"
+  version    = "1.0.1"
+  context    = module.context.self
   attributes = ["ddb"]
-  enabled    = module.this.enabled && var.enable_ddb
+  enabled    = module.context.enabled && var.enable_ddb
 }
 
-resource "aws_kms_key" "ddb" {
-  count                   = module.ddb_meta.enabled ? 1 : 0
-  description             = "${module.ddb_meta.id}-key"
-  deletion_window_in_days = 30
-  tags                    = module.ddb_meta.tags
+module "ddb_dns_context" {
+  source  = "app.terraform.io/SevenPico/context/null"
+  version = "1.0.1"
+  context = module.ddb_context.self
+  enabled = module.ddb_context.enabled && var.route53_records_enabled
+  name    = "${module.context.name}-ddb"
 }
 
+module "ddb_reader_dns_context" {
+  source  = "app.terraform.io/SevenPico/context/null"
+  version = "1.0.1"
+  context = module.ddb_context.self
+  enabled = module.ddb_context.enabled && var.route53_records_enabled
+  name    = "${module.context.name}-ddb-reader"
+}
+
+
+
+# ------------------------------------------------------------------------------
+# KMS Key
+# ------------------------------------------------------------------------------
+module "ddb_kms_key" {
+  source  = "app.terraform.io/SevenPico/kms-key/aws"
+  version = "0.12.1.1"
+  context = module.ddb_context.self
+
+  customer_master_key_spec = "SYMMETRIC_DEFAULT"
+  deletion_window_in_days  = var.kms_key_deletion_window_in_days
+  description              = "KMS key for ${module.ddb_context.id}"
+  enable_key_rotation      = var.kms_key_enable_key_rotation
+  key_usage                = "ENCRYPT_DECRYPT"
+  multi_region             = false
+  policy                   = ""
+}
+
+
+# ------------------------------------------------------------------------------
+# Document Database
+# ------------------------------------------------------------------------------
 module "ddb" {
   source  = "registry.terraform.io/cloudposse/documentdb-cluster/aws"
   version = "0.13.0"
-  context = module.ddb_meta.context
+  context = module.ddb_context.self
 
   subnet_ids                      = var.service_subnet_ids
   vpc_id                          = var.vpc_id
   allowed_security_groups         = concat([module.service_security_group.id], var.ddb_allowed_security_groups)
   db_port                         = var.ddb_port
-  kms_key_id                      = one(aws_kms_key.ddb[*].arn)
+  kms_key_id                      = module.ddb_kms_key.key_id
   master_username                 = var.ddb_username
   master_password                 = var.ddb_password
   retention_period                = var.ddb_retention_period
@@ -56,38 +88,22 @@ module "ddb" {
 
 
 # ------------------------------------------------------------------------------
-# DDB : DNS Record
+# Document Database DNS
 # ------------------------------------------------------------------------------
-module "ddb_dns_meta" {
-  source     = "registry.terraform.io/cloudposse/label/null"
-  version    = "0.25.0"
-  context    = var.dns_context
-  enabled    = module.ddb_meta.enabled && var.route53_records_enabled
-  attributes = ["${module.this.name}-ddb"]
-}
-
-module "ddb_reader_dns_meta" {
-  source     = "registry.terraform.io/cloudposse/label/null"
-  version    = "0.25.0"
-  context    = var.dns_context
-  enabled    = module.ddb_meta.enabled && var.route53_records_enabled
-  attributes = ["${module.this.name}-ddb-reader"]
-}
-
 resource "aws_route53_record" "ddb" {
-  count   = module.ddb_dns_meta.enabled ? 1 : 0
+  count   = module.ddb_dns_context.enabled ? 1 : 0
   zone_id = var.route53_zone_id
   type    = "CNAME"
-  name    = module.ddb_dns_meta.descriptors["FQDN"]
+  name    = module.ddb_dns_context.descriptors["FQDN"]
   records = [module.ddb.endpoint]
   ttl     = 300
 }
 
 resource "aws_route53_record" "ddb_reader" {
-  count   = module.ddb_reader_dns_meta.enabled ? 1 : 0
+  count   = module.ddb_reader_dns_context.enabled ? 1 : 0
   zone_id = var.route53_zone_id
   type    = "CNAME"
-  name    = module.ddb_reader_dns_meta.descriptors["FQDN"]
+  name    = module.ddb_reader_dns_context.descriptors["FQDN"]
   records = [module.ddb.reader_endpoint]
   ttl     = 300
 }

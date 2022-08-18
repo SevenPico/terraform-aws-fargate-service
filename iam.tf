@@ -1,32 +1,36 @@
 # ------------------------------------------------------------------------------
-# ECS Task Execution Role
+# ECS Task Execution Role Context
 # ------------------------------------------------------------------------------
-module "task_exec_policy_meta" {
-  source     = "registry.terraform.io/cloudposse/label/null"
-  version    = "0.25.0"
-  context    = module.this.context
+module "task_exec_policy_context" {
+  source     = "app.terraform.io/SevenPico/context/null"
+  version    = "1.0.1"
+  context    = module.context.self
   attributes = ["task-exec-policy"]
 }
 
+
+# ------------------------------------------------------------------------------
+# ECS Task Execution Role Context
+# ------------------------------------------------------------------------------
 resource "aws_iam_policy" "task_exec_policy" {
-  count       = module.task_exec_policy_meta.enabled ? 1 : 0
+  count       = module.task_exec_policy_context.enabled ? 1 : 0
   policy      = one(data.aws_iam_policy_document.task_exec_policy_doc[*].json)
-  name        = module.task_exec_policy_meta.id
+  name        = module.task_exec_policy_context.id
   description = ""
 }
 
 data "aws_iam_policy_document" "task_exec_policy_doc" {
-  count = module.task_exec_policy_meta.enabled ? 1 : 0
+  count = module.task_exec_policy_context.enabled ? 1 : 0
 
   statement {
     effect    = "Allow"
     actions   = ["secretsmanager:GetSecretValue"]
-    resources = [one(aws_secretsmanager_secret.container[*].arn)]
+    resources = [module.service_configuration.arn]
   }
 
   statement {
     effect    = "Allow"
     actions   = ["kms:Decrypt"]
-    resources = [module.kms_key.key_arn]
+    resources = [module.service_configuration.kms_key_arn]
   }
 }
