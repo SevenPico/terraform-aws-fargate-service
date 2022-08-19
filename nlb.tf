@@ -79,7 +79,7 @@ resource "aws_lb_target_group_attachment" "nlb" {
 resource "aws_route53_record" "nlb" {
   count   = module.nlb_dns_context.enabled ? 1 : 0
   zone_id = var.route53_zone_id
-  name    = module.nlb_dns_context.descriptors["FQDN"]
+  name    = module.nlb_dns_context.dns_name
   type    = "A"
   alias {
     name                   = one(module.nlb[*].nlb_dns_name)

@@ -220,21 +220,7 @@ variable "route53_zone_id" {
   default = ""
 }
 
-#variable "dns_context" {
-#  type    = any
-#  default = {}
-#}
-
 variable "cloudwatch_log_expiration_days" { default = 90 }
-#variable "enable_glacier_transition" { default = false }
-#variable "expiration_days" { default = 90 }
-#variable "force_destroy" { default = true }
-#variable "glacier_transition_days" { default = 60 }
-#variable "lifecycle_rule_enabled" { default = false }
-#variable "noncurrent_version_expiration_days" { default = 30 }
-#variable "noncurrent_version_transition_days" { default = 30 }
-#variable "standard_transition_days" { default = 30 }
-
 
 variable "kms_key_deletion_window_in_days" {
   type    = number

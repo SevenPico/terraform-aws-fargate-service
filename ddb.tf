@@ -94,7 +94,7 @@ resource "aws_route53_record" "ddb" {
   count   = module.ddb_dns_context.enabled ? 1 : 0
   zone_id = var.route53_zone_id
   type    = "CNAME"
-  name    = module.ddb_dns_context.descriptors["FQDN"]
+  name    = module.ddb_dns_context.dns_name
   records = [module.ddb.endpoint]
   ttl     = 300
 }
@@ -103,7 +103,7 @@ resource "aws_route53_record" "ddb_reader" {
   count   = module.ddb_reader_dns_context.enabled ? 1 : 0
   zone_id = var.route53_zone_id
   type    = "CNAME"
-  name    = module.ddb_reader_dns_context.descriptors["FQDN"]
+  name    = module.ddb_reader_dns_context.dns_name
   records = [module.ddb.reader_endpoint]
   ttl     = 300
 }

@@ -15,6 +15,7 @@ module "alb_dns_context" {
   version = "1.0.1"
   context = module.alb_context.self
   enabled = module.alb_context.enabled && var.route53_records_enabled
+  name    = "${module.context.name}-alb"
 }
 
 
@@ -128,7 +129,7 @@ resource "aws_route53_record" "alb" {
   count   = module.alb_dns_context.enabled ? 1 : 0
   zone_id = var.route53_zone_id
   type    = "CNAME"
-  name    = module.alb_dns_context.descriptors["FQDN"]
+  name    = module.alb_dns_context.dns_name
   records = [one(module.alb[*].alb_dns_name)]
   ttl     = 300
 }
