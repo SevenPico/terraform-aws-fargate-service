@@ -40,7 +40,7 @@ module "container_definition" {
   }])
 
   map_secrets = merge(
-    { for key in keys(var.secrets) : key => "${module.service_configuration.arn}:${key}:AWSCURRENT:" },
+    module.service_configuration_context.enabled ? { for key in keys(var.secrets) : key => "${module.service_configuration.arn}:${key}:AWSCURRENT:" } : {},
     var.additional_secrets
   )
 }
