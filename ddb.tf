@@ -57,7 +57,7 @@ module "ddb" {
   vpc_id                          = var.vpc_id
   allowed_security_groups         = concat([module.service_security_group.id], var.ddb_allowed_security_groups)
   db_port                         = var.ddb_port
-  kms_key_id                      = module.ddb_kms_key.key_id
+  kms_key_id                      = module.ddb_kms_key.key_arn
   master_username                 = var.ddb_username
   master_password                 = var.ddb_password
   retention_period                = var.ddb_retention_period
