@@ -89,3 +89,11 @@ output "alb_https_listener_arn" {
 output "alb_http_redirect_listener_arn" {
   value = one(module.alb[*].http_redirect_listener_arn)
 }
+
+output "service_name" {
+  value = module.service.service_name
+}
+
+output "container_name" {
+  value = module.context.id
+}
