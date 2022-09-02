@@ -5,7 +5,7 @@ module "pipeline_context" {
   source     = "app.terraform.io/SevenPico/context/null"
   version    = "1.0.1"
   context    = module.context.self
-  enabled    = module.context.self.enable && var.pipeline_enabled
+  enabled    = module.context.enabled && var.pipeline_enabled
   attributes = ["pipeline"]
 }
 
