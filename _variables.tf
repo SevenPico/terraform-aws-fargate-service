@@ -231,3 +231,8 @@ variable "kms_key_enable_key_rotation" {
   type    = bool
   default = true
 }
+
+variable "pipeline_enabled" {
+  type    = bool
+  default = true
+}
