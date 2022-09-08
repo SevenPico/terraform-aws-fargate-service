@@ -31,6 +31,11 @@ variable "ddb_allowed_security_groups" {
   default = []
 }
 
+variable "ddb_instance_class" {
+  type    = string
+  default = "db.t3.medium"
+}
+
 variable "enable_nlb" {
   type    = bool
   default = false
@@ -89,12 +94,12 @@ variable "alb_target_group_protocol" {
 }
 
 variable "alb_http_redirect" {
-  type = bool
+  type    = bool
   default = false
 }
 
 variable "alb_http_enabled" {
-  type = bool
+  type    = bool
   default = false
 }
 
@@ -108,12 +113,12 @@ variable "health_check_matcher" {
 
 variable "alb_https_ssl_policy" {
   default = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-  type = string
+  type    = string
 }
 
 variable "nlb_tls_ssl_policy" {
   default = "ELBSecurityPolicy-2016-08"
-  type = string
+  type    = string
 }
 
 variable "ecs_cluster_arn" {

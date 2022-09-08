@@ -76,7 +76,7 @@ module "ddb" {
   enabled_cloudwatch_logs_exports = ["audit"]
   engine                          = "docdb"
   engine_version                  = ""
-  instance_class                  = "db.r5.large"
+  instance_class                  = var.ddb_instance_class
   preferred_backup_window         = "07:00-09:00"
   preferred_maintenance_window    = "Mon:22:00-Mon:23:00"
   cluster_parameters = [{
