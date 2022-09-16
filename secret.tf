@@ -5,7 +5,7 @@ module "service_configuration_context" {
   source     = "app.terraform.io/SevenPico/context/null"
   version    = "1.0.1"
   context    = module.context.self
-  attributes = ["configuration"]
+#  attributes = ["configuration"]
 }
 
 
@@ -18,7 +18,7 @@ module "service_configuration" {
   context = module.service_configuration_context.self
 
   create_sns                      = false
-  description                     = "KMS key for ${module.context.id}"
+  description                     = "Secrets and environment variables for ${module.context.id}"
   kms_key_deletion_window_in_days = var.kms_key_deletion_window_in_days
   kms_key_enable_key_rotation     = var.kms_key_enable_key_rotation
   secret_ignore_changes           = false
