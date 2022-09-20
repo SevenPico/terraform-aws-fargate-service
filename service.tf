@@ -6,7 +6,7 @@ module "container_definition" {
   version = "0.58.1"
 
   container_image = var.container_image
-  container_name  = module.context.id
+  container_name  = module.context.name == "" ? module.context.id : module.context.name
   command         = var.service_command
   entrypoint      = var.container_entrypoint
 
