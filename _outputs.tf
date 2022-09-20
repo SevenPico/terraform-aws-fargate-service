@@ -95,5 +95,5 @@ output "service_name" {
 }
 
 output "container_name" {
-  value = module.context.name == "" ? module.context.id : module.context.name
+  value = local.container_name
 }

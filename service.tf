@@ -1,12 +1,16 @@
 # ------------------------------------------------------------------------------
 # Service Container Definition
 # ------------------------------------------------------------------------------
+locals {
+  container_name = module.context.name == "" ? module.context.id : module.context.name
+}
+
 module "container_definition" {
   source  = "registry.terraform.io/cloudposse/ecs-container-definition/aws"
   version = "0.58.1"
 
   container_image = var.container_image
-  container_name  = module.context.name == "" ? module.context.id : module.context.name
+  container_name  = local.container_name
   command         = var.service_command
   entrypoint      = var.container_entrypoint
 
@@ -60,7 +64,7 @@ module "service" {
   ecs_load_balancers = concat([{
     elb_name : null
     target_group_arn : one(module.alb[*].default_target_group_arn)
-    container_name : module.context.id
+    container_name : local.container_name
     container_port : var.container_port
   }], var.ecs_additional_load_balancer_mapping)
 
