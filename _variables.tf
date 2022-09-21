@@ -177,6 +177,11 @@ variable "alb_internal" {
   default = true
 }
 
+variable "enable_rds_delete_protection" {
+  type    = bool
+  default = true
+}
+
 variable "service_assign_public_ip" {
   type    = bool
   default = false

@@ -72,7 +72,7 @@ module "ddb" {
   skip_final_snapshot             = true
   storage_encrypted               = true
   snapshot_identifier             = ""
-  deletion_protection             = false
+  deletion_protection             = var.enable_rds_delete_protection
   enabled_cloudwatch_logs_exports = ["audit"]
   engine                          = "docdb"
   engine_version                  = ""
