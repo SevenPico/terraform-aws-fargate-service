@@ -66,6 +66,11 @@ variable "ignore_changes_task_definition" {
   default = true
 }
 
+variable "ignore_changes_desired_count" {
+  type = bool
+  default = false
+}
+
 variable "secrets" {
   type    = map(string)
   default = {}

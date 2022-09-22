@@ -115,7 +115,7 @@ module "service" {
   docker_volumes                     = []
   proxy_configuration                = null
   ignore_changes_task_definition     = var.ignore_changes_task_definition
-  ignore_changes_desired_count       = false
+  ignore_changes_desired_count       = var.ignore_changes_desired_count
   capacity_provider_strategies       = []
   service_registries                 = []
   permissions_boundary               = ""
