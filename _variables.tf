@@ -51,6 +51,11 @@ variable "enable_alb" {
   default = true
 }
 
+variable "enable_ddb_deletion_protection" {
+  type    = bool
+  default = false
+}
+
 variable "lb_deletion_protection_enabled" {
   type    = bool
   default = false
