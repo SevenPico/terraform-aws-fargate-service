@@ -37,7 +37,7 @@ module "alb" {
   context = module.alb_context.self
 
   access_logs_enabled               = var.access_logs_s3_bucket_id != ""
-  access_logs_prefix                = module.alb_context.id
+  access_logs_prefix                = "${data.aws_caller_identity.current.account_id}/${module.alb_context.id}"
   access_logs_s3_bucket_id          = var.access_logs_s3_bucket_id
   additional_certs                  = []
   certificate_arn                   = var.acm_certificate_arn
