@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "alb_context" {
   source          = "app.terraform.io/SevenPico/context/null"
-  version         = "1.0.1"
+  version         = "1.0.2"
   context         = module.context.self
   enabled         = module.context.enabled && var.enable_alb
   attributes      = ["pvt", "alb"]
@@ -12,7 +12,7 @@ module "alb_context" {
 
 module "alb_dns_context" {
   source  = "app.terraform.io/SevenPico/context/null"
-  version = "1.0.1"
+  version = "1.0.2"
   context = module.alb_context.self
   enabled = module.alb_context.enabled && var.route53_records_enabled
   name    = "${module.context.name}-alb"
@@ -21,7 +21,7 @@ module "alb_dns_context" {
 
 module "alb_tgt_context" {
   source     = "app.terraform.io/SevenPico/context/null"
-  version    = "1.0.1"
+  version    = "1.0.2"
   context    = module.alb_context.self
   attributes = ["tgt"]
 }
