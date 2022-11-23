@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "nlb_context" {
   source          = "app.terraform.io/SevenPico/context/null"
-  version         = "1.0.1"
+  version         = "1.0.2"
   context         = module.context.self
   enabled         = module.context.enabled && var.enable_nlb
   attributes      = ["pvt", "nlb"]
@@ -12,14 +12,14 @@ module "nlb_context" {
 
 module "nlb_tgt_context" {
   source     = "app.terraform.io/SevenPico/context/null"
-  version    = "1.0.1"
+  version    = "1.0.2"
   context    = module.nlb_context.self
   attributes = ["tgt"]
 }
 
 module "nlb_dns_context" {
   source  = "app.terraform.io/SevenPico/context/null"
-  version = "1.0.1"
+  version = "1.0.2"
   context = module.nlb_context.self
   name    = "${module.context.name}-nlb"
   enabled = module.nlb_context.enabled && var.route53_records_enabled
