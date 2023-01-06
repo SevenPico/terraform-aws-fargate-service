@@ -101,3 +101,7 @@ output "container_name" {
 output "alb_target_group_arn" {
   value = try(module.alb[0].default_target_group_arn, "")
 }
+
+output "alb_arn" {
+  value = try(module.alb[0].arn, "")
+}
