@@ -103,5 +103,5 @@ output "alb_target_group_arn" {
 }
 
 output "alb_arn" {
-  value = try(module.alb[0].arn, "")
+  value = try(module.alb[0].alb_arn, "")
 }
