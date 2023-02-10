@@ -26,6 +26,10 @@ output "nlb_dns_route53_name" {
   value = join("", aws_route53_record.nlb[*].name)
 }
 
+output "route53_names" {
+  value = compact([try(join("", aws_route53_record.alb[*].name), ""), try(join("", aws_route53_record.nlb[*].name), "")])
+}
+
 output "nlb_dns_name" {
   value = one(module.nlb[*].nlb_dns_name)
 }
@@ -105,3 +109,5 @@ output "alb_target_group_arn" {
 output "alb_arn" {
   value = try(module.alb[0].alb_arn, "")
 }
+
+
