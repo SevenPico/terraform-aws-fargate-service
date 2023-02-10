@@ -72,7 +72,7 @@ variable "ignore_changes_task_definition" {
 }
 
 variable "ignore_changes_desired_count" {
-  type = bool
+  type    = bool
   default = false
 }
 
