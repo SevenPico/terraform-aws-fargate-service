@@ -2,8 +2,8 @@
 # Network Load Balancer Context
 # ------------------------------------------------------------------------------
 module "nlb_context" {
-  source          = "app.terraform.io/SevenPico/context/null"
-  version         = "1.0.2"
+  source          = "SevenPico/context/null"
+  version         = "2.0.0"
   context         = module.context.self
   enabled         = module.context.enabled && var.enable_nlb
   attributes      = ["pvt", "nlb"]
@@ -11,15 +11,15 @@ module "nlb_context" {
 }
 
 module "nlb_tgt_context" {
-  source     = "app.terraform.io/SevenPico/context/null"
-  version    = "1.0.2"
+  source     = "SevenPico/context/null"
+  version    = "2.0.0"
   context    = module.nlb_context.self
   attributes = ["tgt"]
 }
 
 module "nlb_dns_context" {
-  source  = "app.terraform.io/SevenPico/context/null"
-  version = "1.0.2"
+  source  = "SevenPico/context/null"
+  version = "2.0.0"
   context = module.nlb_context.self
   name    = "${module.context.name}-nlb"
   enabled = module.nlb_context.enabled && var.route53_records_enabled
@@ -31,8 +31,8 @@ module "nlb_dns_context" {
 # ------------------------------------------------------------------------------
 module "nlb" {
   count   = module.nlb_context.enabled ? 1 : 0 # count because module does not destroy all it's resources
-  source  = "app.terraform.io/SevenPico/nlb/aws"
-  version = "0.8.2.2"
+  source  = "SevenPicoForks/nlb/aws"
+  version = "2.0.0"
   context = module.nlb_context.self
 
   access_logs_enabled               = var.access_logs_s3_bucket_id != ""

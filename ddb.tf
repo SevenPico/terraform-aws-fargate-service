@@ -2,24 +2,24 @@
 # Document Database Context
 # ------------------------------------------------------------------------------
 module "ddb_context" {
-  source     = "app.terraform.io/SevenPico/context/null"
-  version    = "1.0.2"
+  source     = "SevenPico/context/null"
+  version    = "2.0.0"
   context    = module.context.self
   attributes = ["ddb"]
   enabled    = module.context.enabled && var.enable_ddb
 }
 
 module "ddb_dns_context" {
-  source  = "app.terraform.io/SevenPico/context/null"
-  version = "1.0.2"
+  source  = "SevenPico/context/null"
+  version = "2.0.0"
   context = module.ddb_context.self
   enabled = module.ddb_context.enabled && var.route53_records_enabled
   name    = "${module.context.name}-ddb"
 }
 
 module "ddb_reader_dns_context" {
-  source  = "app.terraform.io/SevenPico/context/null"
-  version = "1.0.2"
+  source  = "SevenPico/context/null"
+  version = "2.0.0"
   context = module.ddb_context.self
   enabled = module.ddb_context.enabled && var.route53_records_enabled
   name    = "${module.context.name}-ddb-reader"
@@ -31,8 +31,8 @@ module "ddb_reader_dns_context" {
 # KMS Key
 # ------------------------------------------------------------------------------
 module "ddb_kms_key" {
-  source  = "app.terraform.io/SevenPico/kms-key/aws"
-  version = "0.12.1.1"
+  source  = "SevenPicoForks/kms-key/aws"
+  version = "2.0.0"
   context = module.ddb_context.self
 
   customer_master_key_spec = "SYMMETRIC_DEFAULT"

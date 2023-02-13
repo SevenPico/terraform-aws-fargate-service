@@ -2,8 +2,8 @@
 # Service Configuration Context
 # ------------------------------------------------------------------------------
 module "service_configuration_context" {
-  source  = "app.terraform.io/SevenPico/context/null"
-  version = "1.0.2"
+  source  = "SevenPico/context/null"
+  version = "2.0.0"
   context = module.context.self
   #  attributes = ["configuration"]
 }
@@ -13,8 +13,8 @@ module "service_configuration_context" {
 # Service Configuration
 # --------------------------------------------------------------------------
 module "service_configuration" {
-  source  = "app.terraform.io/SevenPico/secret/aws"
-  version = "1.0.7"
+  source  = "SevenPico/secret/aws"
+  version = "3.1.0"
   context = module.service_configuration_context.self
 
   create_sns                      = false
