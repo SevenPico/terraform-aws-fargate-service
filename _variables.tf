@@ -272,3 +272,8 @@ variable "pipeline_enabled" {
   type    = bool
   default = true
 }
+
+variable "preserve_security_group_id" {
+  type = bool
+  default = false
+}
