@@ -45,7 +45,7 @@ module "alarms_context" {
 module "autoscale" {
   source  = "registry.terraform.io/cloudposse/ecs-cloudwatch-autoscaling/aws"
   version = "0.7.2"
-  context = module.autoscale_context
+  context = module.autoscale_context.legacy
 
   service_name          = module.service.service_name
   cluster_name          = var.ecs_cluster_name
@@ -71,7 +71,7 @@ locals {
 module "sns_alarms" {
   source  = "registry.terraform.io/cloudposse/ecs-cloudwatch-sns-alarms/aws"
   version = "0.12.1"
-  context = module.alarms_context.self
+  context = module.alarms_context.legacy
 
   cluster_name = var.ecs_cluster_name
   service_name = module.service.service_name

@@ -77,7 +77,7 @@ module "container_definition" {
 module "service" {
   source  = "registry.terraform.io/cloudposse/ecs-alb-service-task/aws"
   version = "0.64.0"
-  context = module.context.self
+  context = module.context.legacy
 
   container_definition_json = module.container_definition.json_map_encoded_list
   container_port            = var.container_port
@@ -159,8 +159,8 @@ module "service" {
 # Service Security Group
 # ------------------------------------------------------------------------------
 module "service_security_group" {
-  source  = "registry.terraform.io/cloudposse/security-group/aws"
-  version = "0.4.3"
+  source  = "registry.terraform.io/SevenPicoForks/security-group/aws"
+  version = "3.0.0"
   context = module.context.self
 
   vpc_id                     = var.vpc_id
