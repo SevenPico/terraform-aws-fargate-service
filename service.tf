@@ -75,9 +75,9 @@ module "container_definition" {
 # Service Task
 # ------------------------------------------------------------------------------
 module "service" {
-  source  = "registry.terraform.io/cloudposse/ecs-alb-service-task/aws"
-  version = "0.64.0"
-  context = module.context.legacy
+  source  = "registry.terraform.io/SevenPicoForks/ecs-alb-service-task/aws"
+  version = "2.0.0"
+  context = module.context.self
 
   container_definition_json = module.container_definition.json_map_encoded_list
   container_port            = var.container_port
