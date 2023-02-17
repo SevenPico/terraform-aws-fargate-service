@@ -113,7 +113,7 @@ module "alb" {
 # Application Load Balancer Security Group
 # ------------------------------------------------------------------------------
 module "alb_security_group" {
-  source  = "SevenPicoForks/security-group/aws"
+  source  = "registry.terraform.io/SevenPicoForks/security-group/aws"
   version = "3.0.0"
   context = module.alb_context.self
 
@@ -122,6 +122,7 @@ module "alb_security_group" {
   security_group_description = "Controls access to the ALB"
   create_before_destroy      = true
   rules_map                  = var.alb_security_group_rules_map
+  preserve_security_group_id = true // this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
   rules = [
     {
       # FIXME - egress not needed, check
