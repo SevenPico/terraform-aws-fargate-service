@@ -72,7 +72,7 @@ module "ddb_kms_key" {
 module "ddb" {
   source  = "registry.terraform.io/cloudposse/documentdb-cluster/aws"
   version = "0.13.0"
-  context = module.ddb_context.self
+  context = module.ddb_context.legacy
 
   subnet_ids                      = var.service_subnet_ids
   vpc_id                          = var.vpc_id

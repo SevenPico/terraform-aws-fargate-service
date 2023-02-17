@@ -113,8 +113,8 @@ module "alb" {
 # Application Load Balancer Security Group
 # ------------------------------------------------------------------------------
 module "alb_security_group" {
-  source  = "registry.terraform.io/cloudposse/security-group/aws"
-  version = "0.4.3"
+  source  = "SevenPicoForks/security-group/aws"
+  version = "3.0.0"
   context = module.alb_context.self
 
   vpc_id                     = var.vpc_id
