@@ -167,11 +167,13 @@ module "service_security_group" {
   security_group_name        = [module.context.id]
   security_group_description = "Controls access to ${module.context.id}"
 
-  create_before_destroy = true
+  create_before_destroy      = true
+  allow_all_egress           = false
   preserve_security_group_id = var.preserve_security_group_id // if true, this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
-  rules_map = var.service_security_group_rules_map
+  rules_map                  = var.service_security_group_rules_map
   rules = [for rule in [
     {
+      key                      = "ingress-from-${module.alb_context.id}"
       description              = "Allow ingress from ALB to service"
       type                     = "ingress"
       protocol                 = "tcp"
@@ -180,6 +182,7 @@ module "service_security_group" {
       source_security_group_id = module.alb_security_group.id
     },
     module.ddb_context.enabled ? {
+      key                      = "egress-to-${module.ddb_context.id}"
       description              = "Allow egress from service to DocumentDB"
       type                     = "egress"
       protocol                 = "tcp"

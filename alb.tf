@@ -118,6 +118,7 @@ module "alb_security_group" {
   context = module.alb_context.self
 
   vpc_id                     = var.vpc_id
+  allow_all_egress           = false
   security_group_name        = [module.alb_context.id]
   security_group_description = "Controls access to the ALB"
   create_before_destroy      = true
@@ -125,18 +126,10 @@ module "alb_security_group" {
   preserve_security_group_id = var.preserve_security_group_id // if true, this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
   rules = [
     {
-      # FIXME - egress not needed, check
-      # FIXME - key on each rule
-      type        = "egress"
-      from_port   = "0"
-      to_port     = "0"
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
+      key         = "${module.alb_context.id}-ingress"
       type        = "ingress"
-      from_port   = 443
-      to_port     = 443
+      from_port   = var.container_port
+      to_port     = var.container_port
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
     }
