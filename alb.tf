@@ -121,7 +121,7 @@ module "alb_security_group" {
   allow_all_egress           = false
   security_group_name        = [module.alb_context.id]
   security_group_description = "Controls access to the ALB"
-  create_before_destroy      = true
+  create_before_destroy      = var.security_group_create_before_destroy
   rules_map                  = var.alb_security_group_rules_map
   preserve_security_group_id = var.preserve_security_group_id // if true, this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
   rules = [

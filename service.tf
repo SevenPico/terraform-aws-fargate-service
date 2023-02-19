@@ -167,7 +167,7 @@ module "service_security_group" {
   security_group_name        = [module.context.id]
   security_group_description = "Controls access to ${module.context.id}"
 
-  create_before_destroy      = true
+  create_before_destroy      = var.security_group_create_before_destroy
   allow_all_egress           = false
   preserve_security_group_id = var.preserve_security_group_id // if true, this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
   rules_map                  = var.service_security_group_rules_map

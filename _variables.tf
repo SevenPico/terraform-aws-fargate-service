@@ -277,3 +277,8 @@ variable "preserve_security_group_id" {
   type = bool
   default = false
 }
+
+variable "security_group_create_before_destroy" {
+  type = bool
+  default = true
+}
