@@ -53,7 +53,7 @@ module "alb_tgt_context" {
 # ------------------------------------------------------------------------------
 module "alb" {
   count   = module.alb_context.enabled ? 1 : 0
-  source  = "SevenPicoForks/alb/aws"
+  source  = "registry.terraform.io/SevenPicoForks/alb/aws"
   version = "2.0.0"
   context = module.alb_context.self
 
@@ -93,7 +93,7 @@ module "alb" {
   listener_https_fixed_response     = null
   load_balancer_name                = ""
   load_balancer_name_max_length     = 32
-  security_group_enabled            = true
+  security_group_enabled            = false // Because we are creating the Security Group Here, don't create another one
   security_group_ids                = [module.alb_security_group.id]
   slow_start                        = null
   stickiness                        = null
@@ -123,6 +123,7 @@ module "alb_security_group" {
   security_group_description = "Controls access to the ALB"
   create_before_destroy      = var.security_group_create_before_destroy
   rules_map                  = var.alb_security_group_rules_map
+
   preserve_security_group_id = var.preserve_security_group_id // if true, this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
   rules = [
     {

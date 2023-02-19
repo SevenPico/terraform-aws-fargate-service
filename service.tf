@@ -117,7 +117,7 @@ module "service" {
   deployment_minimum_healthy_percent = 100
   health_check_grace_period_seconds  = 10
   enable_ecs_managed_tags            = true
-  security_group_enabled             = false
+  security_group_enabled             = false // Because we are creating the Security Group Here, don't create another one
 
   security_group_description         = ""
   enable_all_egress_rule             = false
