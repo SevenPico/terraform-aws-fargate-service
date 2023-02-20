@@ -122,10 +122,11 @@ module "alb_security_group" {
   security_group_name        = [module.alb_context.id]
   security_group_description = "Controls access to the ALB"
   create_before_destroy      = var.security_group_create_before_destroy
-  rules_map                  = var.alb_security_group_rules_map
+  rules_map                  = {}
 
-  preserve_security_group_id = var.preserve_security_group_id // if true, this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
-  rules = [
+  // if true, this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
+  preserve_security_group_id = var.preserve_security_group_id
+  rules                      = [
     {
       key         = "${module.alb_context.id}-ingress"
       type        = "ingress"
@@ -133,6 +134,27 @@ module "alb_security_group" {
       to_port     = var.container_port
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
+}
+
+# Add rules separately to prevent circular reference
+module "alb_security_group_rules" {
+  source  = "registry.terraform.io/SevenPicoForks/security-group/aws"
+  version = "3.0.0"
+  context = module.alb_context.self
+
+  vpc_id                   = var.vpc_id
+  target_security_group_id = [module.alb_security_group.id]
+  rules_map                = var.alb_security_group_rules_map
+  rules                    = [
+    {
+      key         = "${module.alb_context.id}-egress-to-service"
+      type        = "egress"
+      from_port   = var.container_port
+      to_port     = var.container_port
+      protocol    = "tcp"
+      source_security_group_id = module.service_security_group.id
     }
   ]
 }

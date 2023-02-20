@@ -58,14 +58,16 @@ module "container_definition" {
     }
   }
 
-  port_mappings = concat(var.container_port_mappings, [{
-    containerPort : var.container_port
-    hostPort : var.container_port
-    protocol : "tcp"
-  }])
+  port_mappings = concat(var.container_port_mappings, [
+    {
+      containerPort : var.container_port
+      hostPort : var.container_port
+      protocol : "tcp"
+    }
+  ])
 
   map_secrets = merge(
-    module.service_configuration_context.enabled ? { for key in keys(var.secrets) : key => "${module.service_configuration.arn}:${key}:AWSCURRENT:" } : {},
+    module.service_configuration_context.enabled ? {for key in keys(var.secrets) : key => "${module.service_configuration.arn}:${key}:AWSCURRENT:"} : {},
     var.additional_secrets
   )
 }
@@ -76,20 +78,22 @@ module "container_definition" {
 # ------------------------------------------------------------------------------
 module "service" {
   source  = "registry.terraform.io/SevenPicoForks/ecs-alb-service-task/aws"
-  version = "2.0.2"
+  version = "2.0.3"
   context = module.context.self
 
   container_definition_json = module.container_definition.json_map_encoded_list
   container_port            = var.container_port
   desired_count             = var.desired_count
-  ecs_load_balancers = concat(
+  ecs_load_balancers        = concat(
     var.ecs_additional_load_balancer_mapping,
-    var.enable_alb ? [{
-      elb_name : null
-      target_group_arn : one(module.alb[*].default_target_group_arn)
-      container_name : local.container_name
-      container_port : var.container_port
-    }] : []
+    var.enable_alb ? [
+      {
+        elb_name : null
+        target_group_arn : one(module.alb[*].default_target_group_arn)
+        container_name : local.container_name
+        container_port : var.container_port
+      }
+    ] : []
   )
 
   security_group_ids = [module.service_security_group.id]
@@ -98,7 +102,7 @@ module "service" {
   task_exec_role_arn = []
   service_role_arn   = ""
 
-  task_policy_arns = var.ecs_task_role_policy_arns
+  task_policy_arns      = var.ecs_task_role_policy_arns
   task_exec_policy_arns = flatten([
     one(aws_iam_policy.task_exec_policy[*].arn),
     var.ecs_task_exec_role_policy_arns,
@@ -117,7 +121,8 @@ module "service" {
   deployment_minimum_healthy_percent = 100
   health_check_grace_period_seconds  = 10
   enable_ecs_managed_tags            = true
-  security_group_enabled             = false // Because we are creating the Security Group Here, don't create another one
+  security_group_enabled             = false
+  // Because we are creating the Security Group Here, don't create another one
 
   security_group_description         = ""
   enable_all_egress_rule             = false
@@ -169,9 +174,24 @@ module "service_security_group" {
 
   create_before_destroy      = var.security_group_create_before_destroy
   allow_all_egress           = false
-  preserve_security_group_id = var.preserve_security_group_id // if true, this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
-  rules_map                  = var.service_security_group_rules_map
-  rules = [for rule in [
+  preserve_security_group_id = var.preserve_security_group_id
+  // if true, this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
+  rules_map                  = {}
+  rules                      = []
+}
+
+# ADD RULES SEPARATELY to prevent circular dependency
+module "service_security_group_rules" {
+  source  = "registry.terraform.io/SevenPicoForks/security-group/aws"
+  version = "3.0.0"
+  context = module.context.self
+
+  target_security_group_id = [module.service_security_group.id]
+  vpc_id                   = var.vpc_id
+
+  rules_map = var.service_security_group_rules_map
+  rules     = [
+  for rule in [
     module.alb_context.enabled ? {
       key                      = "ingress-from-${module.alb_context.id}"
       description              = "Allow ingress from ALB to service"
@@ -180,7 +200,7 @@ module "service_security_group" {
       from_port                = var.container_port
       to_port                  = var.container_port
       source_security_group_id = module.alb_security_group.id
-    } : null ,
+    } : null,
     module.ddb_context.enabled ? {
       key                      = "egress-to-${module.ddb_context.id}"
       description              = "Allow egress from service to DocumentDB"
@@ -190,5 +210,6 @@ module "service_security_group" {
       to_port                  = var.ddb_port
       source_security_group_id = module.ddb.security_group_id
     } : null
-  ] : rule if rule != null]
+  ] : rule if rule != null
+  ]
 }
