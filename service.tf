@@ -186,11 +186,12 @@ module "service_security_group_rules" {
   version = "3.0.0"
   context = module.context.self
 
-  target_security_group_id = [module.service_security_group.id]
-  vpc_id                   = var.vpc_id
-
-  rules_map = var.service_security_group_rules_map
-  rules     = [
+  target_security_group_id   = [module.service_security_group.id]
+  vpc_id                     = var.vpc_id
+  preserve_security_group_id = var.preserve_security_group_id
+  create_before_destroy      = var.security_group_create_before_destroy
+  rules_map                  = var.service_security_group_rules_map
+  rules                      = [
   for rule in [
     module.alb_context.enabled ? {
       key                      = "ingress-from-${module.alb_context.id}"
