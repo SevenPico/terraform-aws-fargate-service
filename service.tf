@@ -75,9 +75,9 @@ module "container_definition" {
 # Service Task
 # ------------------------------------------------------------------------------
 module "service" {
-  source  = "registry.terraform.io/cloudposse/ecs-alb-service-task/aws"
-  version = "0.64.0"
-  context = module.context.legacy
+  source  = "registry.terraform.io/SevenPicoForks/ecs-alb-service-task/aws"
+  version = "2.0.1"
+  context = module.context.self
 
   container_definition_json = module.container_definition.json_map_encoded_list
   container_port            = var.container_port
@@ -117,7 +117,7 @@ module "service" {
   deployment_minimum_healthy_percent = 100
   health_check_grace_period_seconds  = 10
   enable_ecs_managed_tags            = true
-  security_group_enabled             = false
+  security_group_enabled             = false // Because we are creating the Security Group Here, don't create another one
 
   security_group_description         = ""
   enable_all_egress_rule             = false
@@ -167,19 +167,22 @@ module "service_security_group" {
   security_group_name        = [module.context.id]
   security_group_description = "Controls access to ${module.context.id}"
 
-  create_before_destroy = true
-
-  rules_map = var.service_security_group_rules_map
+  create_before_destroy      = var.security_group_create_before_destroy
+  allow_all_egress           = false
+  preserve_security_group_id = var.preserve_security_group_id // if true, this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
+  rules_map                  = var.service_security_group_rules_map
   rules = [for rule in [
-    {
+    module.alb_context.enabled ? {
+      key                      = "ingress-from-${module.alb_context.id}"
       description              = "Allow ingress from ALB to service"
       type                     = "ingress"
       protocol                 = "tcp"
       from_port                = var.container_port
       to_port                  = var.container_port
       source_security_group_id = module.alb_security_group.id
-    },
+    } : null ,
     module.ddb_context.enabled ? {
+      key                      = "egress-to-${module.ddb_context.id}"
       description              = "Allow egress from service to DocumentDB"
       type                     = "egress"
       protocol                 = "tcp"
