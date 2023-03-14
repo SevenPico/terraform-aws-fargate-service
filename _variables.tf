@@ -83,8 +83,8 @@ variable "lb_deletion_protection_enabled" {
 }
 
 variable "ecs_additional_load_balancer_mapping" {
-  type    = any
-  default = []
+  type    = map(any)
+  default = {}
 }
 
 variable "ignore_changes_task_definition" {
