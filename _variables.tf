@@ -227,8 +227,8 @@ variable "ecs_task_role_policy_arns" {
 }
 
 variable "ecs_task_exec_role_policy_arns" {
-  type    = list(string)
-  default = []
+  type    = map(string)
+  default = {}
 }
 
 variable "ecs_service_role_policy_arns" {
