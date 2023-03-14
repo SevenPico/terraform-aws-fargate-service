@@ -78,7 +78,7 @@ module "container_definition" {
 # ------------------------------------------------------------------------------
 module "service" {
   source  = "registry.terraform.io/SevenPicoForks/ecs-alb-service-task/aws"
-  version = "2.3.0"       #Latest Version
+  version = "2.3.0"
   context = module.context.self
 
   container_definition_json = module.container_definition.json_map_encoded_list
