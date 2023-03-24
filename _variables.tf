@@ -221,19 +221,19 @@ variable "container_port_mappings" {
   default = []
 }
 
-variable "ecs_task_role_policy_arns" {
-  type    = map(string)
-  default = {}
-}
-
-variable "ecs_task_exec_role_policy_arns" {
-  type    = map(string)
-  default = {}
-}
-
-variable "ecs_service_role_policy_arns" {
+variable "ecs_task_role_policy_docs" {
   type    = list(string)
   default = []
+}
+
+variable "ecs_task_exec_role_policy_docs" {
+  type    = list(string)
+  default = []
+}
+
+variable "service_role_arn" {
+  type    = string
+  default = ""
 }
 
 variable "deployment_artifacts_s3_bucket_id" {

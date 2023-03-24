@@ -78,7 +78,7 @@ module "container_definition" {
 # ------------------------------------------------------------------------------
 module "service" {
   source  = "registry.terraform.io/SevenPicoForks/ecs-alb-service-task/aws"
-  version = "2.3.0"
+  version = "2.4.0"
   context = module.context.self
 
   container_definition_json = module.container_definition.json_map_encoded_list
@@ -97,16 +97,13 @@ module "service" {
   )
 
   security_group_ids = [module.service_security_group.id]
+  service_role_arn   = var.service_role_arn
 
-  task_role_arn      = []
-  task_exec_role_arn = []
-  service_role_arn   = ""
-
-  task_policy_arns      = var.ecs_task_role_policy_arns
-  task_exec_policy_arns = merge(
-    {for i in aws_iam_policy.task_exec_policy.*.arn : i => i},
-    var.ecs_task_exec_role_policy_arns,
-  )
+  task_policy_documents      = var.ecs_task_role_policy_docs
+  task_exec_policy_documents = flatten(concat(
+    [try(data.aws_iam_policy_document.task_exec_policy_doc[0].json, "")],
+    var.ecs_task_exec_role_policy_docs,
+  ))
 
   vpc_id          = var.vpc_id
   ecs_cluster_arn = var.ecs_cluster_arn
