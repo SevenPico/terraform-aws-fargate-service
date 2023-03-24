@@ -78,35 +78,32 @@ module "container_definition" {
 # ------------------------------------------------------------------------------
 module "service" {
   source  = "registry.terraform.io/SevenPicoForks/ecs-alb-service-task/aws"
-  version = "2.0.3"
+  version = "2.4.0"
   context = module.context.self
 
   container_definition_json = module.container_definition.json_map_encoded_list
   container_port            = var.container_port
   desired_count             = var.desired_count
-  ecs_load_balancers        = concat(
+  ecs_load_balancers        = merge(
     var.ecs_additional_load_balancer_mapping,
-    var.enable_alb ? [
-      {
+    var.enable_alb ? {
+      lb-1 = {
         elb_name : null
         target_group_arn : one(module.alb[*].default_target_group_arn)
         container_name : local.container_name
         container_port : var.container_port
       }
-    ] : []
+    } : {}
   )
 
   security_group_ids = [module.service_security_group.id]
+  service_role_arn   = var.service_role_arn
 
-  task_role_arn      = []
-  task_exec_role_arn = []
-  service_role_arn   = ""
-
-  task_policy_arns      = var.ecs_task_role_policy_arns
-  task_exec_policy_arns = flatten([
-    one(aws_iam_policy.task_exec_policy[*].arn),
-    var.ecs_task_exec_role_policy_arns,
-  ])
+  task_policy_documents      = var.ecs_task_role_policy_docs
+  task_exec_policy_documents = flatten(concat(
+    [try(data.aws_iam_policy_document.task_exec_policy_doc[0].json, "")],
+    var.ecs_task_exec_role_policy_docs,
+  ))
 
   vpc_id          = var.vpc_id
   ecs_cluster_arn = var.ecs_cluster_arn
