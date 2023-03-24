@@ -33,23 +33,19 @@ module "task_exec_policy_context" {
 # ------------------------------------------------------------------------------
 # ECS Task Execution Role Context
 # ------------------------------------------------------------------------------
-resource "aws_iam_policy" "task_exec_policy" {
-  count       = module.task_exec_policy_context.enabled ? 1 : 0
-  policy      = one(data.aws_iam_policy_document.task_exec_policy_doc[*].json)
-  name        = module.task_exec_policy_context.id
-  description = ""
-}
 
 data "aws_iam_policy_document" "task_exec_policy_doc" {
   count = module.task_exec_policy_context.enabled ? 1 : 0
 
   statement {
+    sid       = "AllowSecretRead"
     effect    = "Allow"
     actions   = ["secretsmanager:GetSecretValue"]
     resources = [module.service_configuration.arn]
   }
 
   statement {
+    sid       = "AllowSecretDecrypt"
     effect    = "Allow"
     actions   = ["kms:Decrypt"]
     resources = [module.service_configuration.kms_key_arn]
