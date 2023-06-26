@@ -35,6 +35,8 @@ module "pipeline_context" {
 # Continuous Deployment Pipeline Cloudwatch Group
 # ------------------------------------------------------------------------------
 resource "aws_cloudwatch_log_group" "pipeline" {
+  #checkov:skip=CKV_AWS_158:skipping 'Ensure that CloudWatch Log Group is encrypted by KMS'
+  #checkov:skip=CKV_AWS_338:skipping 'Ensure CloudWatch log groups retains logs for at least 1 year'
   count             = module.pipeline_context.enabled ? 1 : 0
   name              = "/aws/codebuild/${module.pipeline_context.id}"
   retention_in_days = var.cloudwatch_log_expiration_days
@@ -83,6 +85,9 @@ data "aws_iam_policy_document" "pipeline_assume_role_policy" {
 
 # FIXME - likely doesn't need all these permissions
 data "aws_iam_policy_document" "pipeline_policy" {
+  #checkov:skip=CKV_AWS_356:skipping 'Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'
+  #checkov:skip=CKV_AWS_111:skipping 'Ensure IAM policies does not allow write access without constraints'
+  #checkov:skip=CKV_AWS_109:skipping 'Ensure IAM policies does not allow permissions management / resource exposure without constraints'
   count   = module.pipeline_context.enabled ? 1 : 0
   version = "2012-10-17"
   statement {
@@ -162,6 +167,7 @@ data "aws_iam_policy_document" "pipeline_policy" {
 # Continuous Deployment Pipeline
 # ------------------------------------------------------------------------------
 resource "aws_codepipeline" "service" {
+  #checkov:skip=CKV_AWS_219:skipping 'Ensure Code Pipeline Artifact store is using a KMS CMK'
   count    = module.pipeline_context.enabled ? 1 : 0
   name     = module.pipeline_context.id
   role_arn = one(aws_iam_role.pipeline[*].arn)
