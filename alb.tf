@@ -126,7 +126,7 @@ module "alb_security_group" {
 
   // if true, this will cause short service disruption, but will not DESTROY the SG which is more catastrophic
   preserve_security_group_id = var.preserve_security_group_id
-  rules                      = [
+  rules = [
     {
       key         = "${module.alb_context.id}-ingress"
       type        = "ingress"
@@ -144,18 +144,18 @@ module "alb_security_group_rules" {
   version = "3.0.0"
   context = module.alb_context.self
 
-  vpc_id                   = var.vpc_id
-  target_security_group_id = [module.alb_security_group.id]
-  rules_map                = var.alb_security_group_rules_map
+  vpc_id                     = var.vpc_id
+  target_security_group_id   = [module.alb_security_group.id]
+  rules_map                  = var.alb_security_group_rules_map
   preserve_security_group_id = var.preserve_security_group_id
   create_before_destroy      = var.security_group_create_before_destroy
-  rules                    = [
+  rules = [
     {
-      key         = "${module.alb_context.id}-egress-to-service"
-      type        = "egress"
-      from_port   = var.container_port
-      to_port     = var.container_port
-      protocol    = "tcp"
+      key                      = "${module.alb_context.id}-egress-to-service"
+      type                     = "egress"
+      from_port                = var.container_port
+      to_port                  = var.container_port
+      protocol                 = "tcp"
       source_security_group_id = module.service_security_group.id
     }
   ]
